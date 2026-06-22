@@ -1,0 +1,10 @@
+{
+  "name": "skills",
+  "version": "0.1.0",
+  "description": "a collection of skills",
+  "author": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "keywords": ["skills"]
+}

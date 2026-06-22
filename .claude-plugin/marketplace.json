@@ -1,0 +1,15 @@
+{
+  "name": "ae-skills",
+  "description": "Russell Sherman's Claude Code plugins for agentic engineering workflows.",
+  "owner": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "plugins": [
+    {
+      "name": "skills",
+      "source": "./src",
+      "description": "A collection of skills"
+    }
+  ]
+}
