@@ -1,0 +1,5 @@
+# Goal: Checks that /greet replies with one short hello line and calls no tools.
+schema_version: "1.1"
+name: greets-on-command
+expected_outcome: |
+  The agent replies with a short hello greeting and nothing else, without calling any tools.

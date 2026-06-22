@@ -1,0 +1,20 @@
+{
+  "name": "ae-skills",
+  "description": "Russell Sherman's Claude Code plugins for agentic engineering workflows.",
+  "owner": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "plugins": [
+    {
+      "name": "sdlc",
+      "source": "./plugins/sdlc",
+      "description": "Skills for driving AI Native Software Development Lifecycle"
+    },
+    {
+      "name": "workflow",
+      "source": "./plugins/workflow",
+      "description": "Skills for driving my personal workflow."
+    }
+  ]
+}
