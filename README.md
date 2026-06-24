@@ -2,10 +2,11 @@
 
 Russell Sherman's Claude Code plugin marketplace — collections of [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) for agentic engineering workflows.
 
-The marketplace publishes two plugins:
+The marketplace publishes three plugins:
 
 - **`skills`** — a broad collection of authoring and workflow skills (source [`plugins/skills/`](plugins/skills/), skills under [`plugins/skills/skills/`](plugins/skills/skills/)).
 - **`cli`** — skills for driving common command-line tools (source [`plugins/cli/`](plugins/cli/), skills under [`plugins/cli/skills/`](plugins/cli/skills/)).
+- **`rnd`** — skills for research and development workflows (source [`plugins/rnd/`](plugins/rnd/), skills under [`plugins/rnd/skills/`](plugins/rnd/skills/)).
 
 Each skill is a directory containing a `SKILL.md` (with YAML frontmatter and instructions) plus any supporting scripts or references.
 
@@ -19,12 +20,10 @@ Each skill is a directory containing a `SKILL.md` (with YAML frontmatter and ins
 | [teach](plugins/skills/skills/teach/SKILL.md) | Teach the user a new skill or concept, within this workspace. |
 | [using-git-worktrees](plugins/skills/skills/using-git-worktrees/SKILL.md) | Use Git worktrees correctly — bare-repo layout, parallel worktrees without collisions, and the full lifecycle. |
 | [workflow-creator](plugins/skills/skills/workflow-creator/SKILL.md) | Author runnable workflow scripts for Claude Code's Workflow tool — deterministic multi-agent orchestration in plain JavaScript control flow. |
-| [writing-adr](plugins/skills/skills/writing-adr/SKILL.md) | Author and manage Architecture Decision Records (ADRs) using MADR 4.0 — record, supersede, and deprecate decisions. |
 | [writing-bash-scripts](plugins/skills/skills/writing-bash-scripts/SKILL.md) | Write robust, ShellCheck-clean bash scripts — portability, conventions, and CLI scaffolding. |
 | [writing-dockerfiles](plugins/skills/skills/writing-dockerfiles/SKILL.md) | Author and harden production-grade Dockerfiles and container images — multi-stage builds, size, security, and healthchecks. |
 | [writing-github-actions](plugins/skills/skills/writing-github-actions/SKILL.md) | Author secure, efficient GitHub Actions workflows and actions — matrix builds, caching, artifacts, OIDC, and permissions. |
 | [writing-gitlab-pipelines](plugins/skills/skills/writing-gitlab-pipelines/SKILL.md) | Write, review, and optimize GitLab CI/CD pipelines (`.gitlab-ci.yml`) — stages/jobs, caching/artifacts, environments, and scanning. |
-| [writing-prds](plugins/skills/skills/writing-prds/SKILL.md) | Author a Product Requirements Document (PRD) through a problem-first guided conversation with SMART metrics and user stories. |
 
 ## `cli` plugin
 
@@ -47,6 +46,13 @@ Each skill is a directory containing a `SKILL.md` (with YAML frontmatter and ins
 | [using-omlx-cli](plugins/cli/skills/using-omlx-cli/SKILL.md) | Run local LLM inference on Apple Silicon with the omlx CLI — serve models, OpenAI-compatible API, MCP, and memory tuning. |
 | [using-terraform-cli](plugins/cli/skills/using-terraform-cli/SKILL.md) | Author and run Terraform/OpenTofu safely — state and backends, version pinning, refactoring, secrets, and CI/CD. |
 
+## `rnd` plugin
+
+| Skill | Description |
+| --- | --- |
+| [writing-adr](plugins/rnd/skills/writing-adr/SKILL.md) | Author and manage Architecture Decision Records (ADRs) using MADR 4.0 — record, supersede, and deprecate decisions. |
+| [writing-prds](plugins/rnd/skills/writing-prds/SKILL.md) | Author a Product Requirements Document (PRD) through a problem-first guided conversation with SMART metrics and user stories. |
+
 ## Installation
 
 This repository is a [Claude Code plugin marketplace](https://docs.claude.com/en/docs/claude-code/plugins) named `ae-skills`.
@@ -57,6 +63,7 @@ Inside Claude Code, add the marketplace and install whichever plugin(s) you want
 /plugin marketplace add russelltsherman/ae-skills
 /plugin install skills@ae-skills
 /plugin install cli@ae-skills
+/plugin install rnd@ae-skills
 ```
 
 The first command registers this GitHub repo as a marketplace; the others install plugins from it. You can also browse and install interactively with `/plugin`.
@@ -72,7 +79,8 @@ To remove a plugin or the marketplace:
 ```
 /plugin uninstall skills@ae-skills
 /plugin uninstall cli@ae-skills
+/plugin uninstall rnd@ae-skills
 /plugin marketplace remove ae-skills
 ```
 
-The marketplace manifest lives in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json); the plugin manifests in [`plugins/skills/.claude-plugin/plugin.json`](plugins/skills/.claude-plugin/plugin.json) and [`plugins/cli/.claude-plugin/plugin.json`](plugins/cli/.claude-plugin/plugin.json).
+The marketplace manifest lives in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json); the plugin manifests in [`plugins/skills/.claude-plugin/plugin.json`](plugins/skills/.claude-plugin/plugin.json), [`plugins/cli/.claude-plugin/plugin.json`](plugins/cli/.claude-plugin/plugin.json), and [`plugins/rnd/.claude-plugin/plugin.json`](plugins/rnd/.claude-plugin/plugin.json).

@@ -15,6 +15,11 @@
       "name": "cli",
       "source": "./plugins/cli",
       "description": "Skills for driving common command-line tools"
+    },
+    {
+      "name": "rnd",
+      "source": "./plugins/rnd",
+      "description": "Skills for research and development workflows"
     }
   ]
 }

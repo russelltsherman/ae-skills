@@ -1,0 +1,10 @@
+{
+  "name": "rnd",
+  "version": "0.1.0",
+  "description": "Skills for research and development workflows",
+  "author": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "keywords": ["research", "development", "skills"]
+}
