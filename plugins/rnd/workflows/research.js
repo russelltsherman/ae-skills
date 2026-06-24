@@ -69,6 +69,49 @@ async function withRetry(thunk, { label, isEmpty }) {
 }
 // --- end retry helpers --------------------------------------------------------
 
+// --- concurrency limiter (testable) -------------------------------------------
+// Bounds how many agent() calls execute simultaneously. The fan-out phases —
+// search (up to 6 angles), fetch (up to MAX_FETCH sources), and especially the
+// 3-vote verify across up to MAX_VERIFY_CLAIMS claims (≈75 agents) — each spawn
+// agents that hit WebSearch/WebFetch + the LLM, and running too many at once
+// trips API / web-search rate limits. The workflow runtime only caps at
+// min(16, cores-2), which is host-dependent and still too high for external
+// rate limits; this gate imposes a fixed, lower ceiling regardless of host.
+// Pure JS (no workflow primitives) so it is unit-tested in isolation by
+// __tests__/research.limiter.test.mjs via the same block-extraction trick.
+//
+// Tune MAX_CONCURRENT_AGENTS down if you still see 429s, up to go faster.
+const MAX_CONCURRENT_AGENTS = 4
+
+// createLimiter(n) returns a function that takes a thunk and runs it only once
+// fewer than n thunks are in flight, queueing the rest. Each call gets its own
+// promise that settles with the thunk's resolution/rejection, so callers
+// (withRetry, parallel) keep their existing throw/null semantics. Leaf-only use
+// (no gated call awaits another gated call) means it cannot deadlock.
+function createLimiter(limit) {
+  let active = 0
+  const queue = []
+  const pump = () => {
+    if (active >= limit || queue.length === 0) return
+    active++
+    const { thunk, resolve, reject } = queue.shift()
+    Promise.resolve()
+      .then(thunk)
+      .then(resolve, reject)
+      .finally(() => { active--; pump() })
+  }
+  return (thunk) => new Promise((resolve, reject) => {
+    queue.push({ thunk, resolve, reject })
+    pump()
+  })
+}
+// --- end concurrency limiter --------------------------------------------------
+
+// The single gate shared by every agent() call in this run. gatedAgent is a
+// drop-in for agent(...) that defers execution until a concurrency slot is free.
+const gate = createLimiter(MAX_CONCURRENT_AGENTS)
+const gatedAgent = (...callArgs) => gate(() => agent(...callArgs))
+
 // ─── Schemas ───
 const SCOPE_SCHEMA = {
   type: "object", required: ["question", "angles", "summary"],
@@ -148,7 +191,7 @@ const QUESTION = (typeof args === "string" && args.trim()) || ""
 if (!QUESTION) {
   return { error: "No research question provided. Pass it as args: Workflow({scriptPath: '.../workflows/research.js', args: '<question>'})." }
 }
-const scope = await withRetry(() => agent(
+const scope = await withRetry(() => gatedAgent(
   "Decompose this research question into complementary search angles.\n\n" +
   "## Question\n" + QUESTION + "\n\n" +
   "## Task\n" +
@@ -224,7 +267,7 @@ const VERIFY_PROMPT = (claim, v) =>
 const searchResults = await pipeline(
   scope.angles,
 
-  angle => withRetry(() => agent(SEARCH_PROMPT(angle), {
+  angle => withRetry(() => gatedAgent(SEARCH_PROMPT(angle), {
     label: "search:" + angle.label, phase: "Search", schema: SEARCH_SCHEMA
   }), { label: "search:" + angle.label, isEmpty: isEmptySearch }).then(r => {
     if (!r) return null
@@ -255,7 +298,7 @@ const searchResults = await pipeline(
       novel.map(source => () => {
         let host = "unknown"
         try { host = new URL(source.url).hostname.replace(/^www\./, "") } catch {}
-        return withRetry(() => agent(FETCH_PROMPT(source, searchResult.angle), {
+        return withRetry(() => gatedAgent(FETCH_PROMPT(source, searchResult.angle), {
           label: "fetch:" + host,
           phase: "Fetch",
           schema: EXTRACT_SCHEMA,
@@ -304,7 +347,7 @@ const voted = (await parallel(
   rankedClaims.map(claim => () =>
     parallel(
       Array.from({ length: VOTES_PER_CLAIM }, (_, v) => () =>
-        withRetry(() => agent(VERIFY_PROMPT(claim, v), {
+        withRetry(() => gatedAgent(VERIFY_PROMPT(claim, v), {
           label: "v" + v + ":" + claim.claim.slice(0, 40),
           phase: "Verify",
           schema: VERDICT_SCHEMA,
@@ -356,7 +399,7 @@ const killedBlock = killed.length > 0
     killed.map(c => "- \"" + c.claim + "\" (" + c.sourceUrl + ", vote " + (c.verdicts.length - c.refutedVotes) + "-" + c.refutedVotes + ")").join("\n")
   : ""
 
-const report = await withRetry(() => agent(
+const report = await withRetry(() => gatedAgent(
   "## Synthesis: research report\n\n" +
   "**Question:** " + QUESTION + "\n\n" +
   confirmed.length + " claims survived " + VOTES_PER_CLAIM + "-vote adversarial verification. Merge semantic duplicates and synthesize.\n\n" +
