@@ -1,10 +1,10 @@
 {
   "name": "rnd",
   "version": "0.1.0",
-  "description": "Skills for research and development workflows",
+  "description": "Research and development toolkit — skills for ADRs, PRDs, and architecture design, plus resilient deep-research (/ae-research) and workflow-backed code review (/ae-code-review): faithful reproductions of the built-in deep-research and code-review workflows, hardened with a per-task retry wrapper so failed or empty agent steps are retried before degrading gracefully.",
   "author": {
     "name": "Russell Sherman",
     "url": "https://github.com/russelltsherman/ae-skills"
   },
-  "keywords": ["research", "development", "skills"]
+  "keywords": ["research", "deep-research", "code-review", "workflow", "development", "skills", "adr", "prd"]
 }

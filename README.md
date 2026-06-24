@@ -6,9 +6,9 @@ The marketplace publishes three plugins:
 
 - **`skills`** — a broad collection of authoring and workflow skills (source [`plugins/skills/`](plugins/skills/), skills under [`plugins/skills/skills/`](plugins/skills/skills/)).
 - **`cli`** — skills for driving common command-line tools (source [`plugins/cli/`](plugins/cli/), skills under [`plugins/cli/skills/`](plugins/cli/skills/)).
-- **`rnd`** — skills for research and development workflows (source [`plugins/rnd/`](plugins/rnd/), skills under [`plugins/rnd/skills/`](plugins/rnd/skills/)).
+- **`rnd`** — research & development toolkit: authoring skills plus the `/ae-research` and `/ae-code-review` commands and their retry-hardened workflows (source [`plugins/rnd/`](plugins/rnd/), skills under [`plugins/rnd/skills/`](plugins/rnd/skills/)).
 
-Each skill is a directory containing a `SKILL.md` (with YAML frontmatter and instructions) plus any supporting scripts or references.
+Each skill is a directory containing a `SKILL.md` (with YAML frontmatter and instructions) plus any supporting scripts or references. The `rnd` plugin additionally ships slash commands (`plugins/rnd/commands/`) and Workflow scripts (`plugins/rnd/workflows/`).
 
 ## `skills` plugin
 
@@ -48,10 +48,28 @@ Each skill is a directory containing a `SKILL.md` (with YAML frontmatter and ins
 
 ## `rnd` plugin
 
+Skills:
+
 | Skill | Description |
 | --- | --- |
+| [designing-architecture](plugins/rnd/skills/designing-architecture/SKILL.md) | Choose and apply a software architecture pattern through a structured decision workflow — requirements/constraints, project sizing, pattern selection, and directory structure. |
 | [writing-adr](plugins/rnd/skills/writing-adr/SKILL.md) | Author and manage Architecture Decision Records (ADRs) using MADR 4.0 — record, supersede, and deprecate decisions. |
 | [writing-prds](plugins/rnd/skills/writing-prds/SKILL.md) | Author a Product Requirements Document (PRD) through a problem-first guided conversation with SMART metrics and user stories. |
+
+Commands:
+
+| Command | Description |
+| --- | --- |
+| [`/ae-research`](plugins/rnd/commands/ae-research.md) | Research one ad-hoc topic, or a whole topics file (`@`-prefixed), with the resilient research workflow — saving a cited Markdown report per topic. |
+| [`/ae-code-review`](plugins/rnd/commands/ae-code-review.md) | Review the current diff for correctness bugs and reuse/simplification/efficiency cleanups at a chosen effort level (`low`/`medium` inline; `high`/`xhigh`/`max` via the `review` workflow). `--fix` applies findings; `--comment` posts inline PR comments. |
+
+Workflows (invoked by the commands via `scriptPath`):
+
+| Workflow | Description |
+| --- | --- |
+| [research.js](plugins/rnd/workflows/research.js) | Resilient deep-research — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report, with per-task retry on failed/empty agent steps. |
+| [research-batch.js](plugins/rnd/workflows/research-batch.js) | Run the resilient research workflow over a to-do list of topics, sequentially, one structured report per topic — failures are captured, never dropped. |
+| [review.js](plugins/rnd/workflows/review.js) | Resilient workflow-backed code review — one finder per review angle, an independent verifier per candidate, then a ranked, capped findings report, with per-task retry. |
 
 ## Installation
 
