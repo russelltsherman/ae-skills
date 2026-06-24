@@ -55,26 +55,42 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/batch-research/cli.mjs" todo "<TOPICS_FILE>"
 
 ### 1. Run the research workflow
 
-Invoke the batch workflow by path, passing the step-0 to-do array as `topics` plus the path to the
-`research` workflow so the batch can resolve its sibling by path (bare workflow names may be
-plugin-namespaced):
+First capture today's date — the workflow cannot call `Date`, so you must pass it in:
+
+```bash
+date +%F
+```
+
+Invoke the batch workflow by path, passing the step-0 to-do array as `topics`, the path to the
+`research` workflow (so the batch resolves its sibling by path — bare workflow names may be
+plugin-namespaced), and the **write context** (`cliPath`, `researchDir`, `date`) that lets the
+workflow persist each report the moment its research finishes:
 
 ```
 Workflow({
   scriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/research-batch.js",
   args: {
     topics: <to-do array>,
-    researchScriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/research.js"
+    researchScriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/research.js",
+    cliPath: "${CLAUDE_PLUGIN_ROOT}/scripts/batch-research/cli.mjs",
+    researchDir: "research",
+    date: "<output of `date +%F`>"
   }
 })
 ```
 
-Wait for it to finish. It runs `research` once per topic, sequentially, and returns
-`{ results: [{ topic, slug, report, error }], stats: { topics, ok, failed } }`. It never drops a
-topic — failed runs come back with `error` set and `report: null`. (Single mode is just a one-topic
-batch.)
+Wait for it to finish. It runs `research` once per topic, sequentially, and **writes each
+`research/<slug>.md` (and refreshes `research/README.md`) as soon as that topic completes** — so on a
+long batch you can start reading finished reports immediately instead of waiting for the whole run.
+It returns `{ results: [{ topic, slug, report, error }], stats: { topics, ok, failed, wrote } }`. It
+never drops a topic — failed runs come back with `error` set and `report: null`. (Single mode is just
+a one-topic batch.)
 
-### 2. Write the reports + refresh the index
+### 2. Backfill + refresh the index (safety net)
+
+The reports are already on disk from step 1. This step is a deterministic backfill: it re-renders
+every returned topic (covering any whose per-topic writer agent flaked) and regenerates the index, so
+the final state is always produced by the tested helper.
 
 - Save the workflow's `results` array (the JSON array itself) to a temporary file, e.g. write it
   with the Write tool to `/tmp/ae-research-results.json`.
@@ -94,11 +110,16 @@ batch.)
 ## Notes
 
 - **Determinism:** topics are never silently dropped and reports are always written by tested code
-  — the helper writes a report file for every returned topic, including failures, so the README
+  — both the per-topic `write-one` (step 1) and the end-of-batch `write` (step 2) go through the same
+  helper, which writes a report file for every returned topic, including failures, so the README
   index can never list a report whose file is missing.
+- **Incremental writes:** the workflow writes each `research/<slug>.md` the instant its topic's
+  research finishes (via a writer agent calling `cli.mjs write-one`), so finished reports are
+  readable while later topics are still running. Workflow scripts have no filesystem access, so the
+  agent is the only available writer; if one writer agent fails, step 2 backfills that report.
 - **Resume (batch):** step 0 skips topics that already have a `research/<slug>.md`, so re-running
-  continues where a previous run left off. As a whole-batch tradeoff, reports are written only after
-  the workflow finishes; if a long batch is interrupted, re-run it to resume at topic granularity.
+  continues where a previous run left off. Because writes are now incremental, an interrupted batch
+  keeps every report completed so far — re-run to resume at topic granularity.
 - **Single mode does not skip:** naming a topic always re-runs it and overwrites
   `research/<slug>.md`.
 - **The report format** (sections, the `_stats_` footer including `retriesUsed`, the incomplete

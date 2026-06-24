@@ -14,6 +14,12 @@
 //       regenerate research-dir/README.md from ALL reports on disk. Prints a
 //       "done / failed" summary.
 //
+//   write-one <result-json-file> <research-dir> <date>
+//       Like `write` but for a SINGLE {topic, slug, report, error} object (not
+//       an array). Renders+writes its one report and regenerates the README.
+//       This is what research-batch.js calls per-topic, so each report lands on
+//       disk the moment its research finishes instead of after the whole batch.
+//
 //   readme <research-dir>
 //       Regenerate research-dir/README.md from the reports on disk.
 
@@ -70,6 +76,15 @@ function cmdTodo(topicsFile, researchDir) {
   process.stdout.write(JSON.stringify(todo, null, 2) + "\n")
 }
 
+// Render+write one {topic, slug, report, error} entry to research-dir/<slug>.md.
+// Returns its on-disk path and whether it was incomplete. Shared by write/write-one.
+function writeEntry(entry, researchDir, date) {
+  const s = entry.slug || slug(entry.topic)
+  const path = join(researchDir, `${s}.md`)
+  writeFileSync(path, renderReport(entry, date))
+  return { path, incomplete: isIncomplete(entry) }
+}
+
 function cmdWrite(resultsFile, researchDir, date) {
   if (!resultsFile || !researchDir || !date) {
     die("usage: cli.mjs write <results-json-file> <research-dir> <date>")
@@ -83,16 +98,32 @@ function cmdWrite(resultsFile, researchDir, date) {
   let done = 0
   let failed = 0
   for (const entry of results) {
-    const s = entry.slug || slug(entry.topic)
-    writeFileSync(join(researchDir, `${s}.md`), renderReport(entry, date))
-    if (isIncomplete(entry)) failed++
+    const { path, incomplete } = writeEntry(entry, researchDir, date)
+    if (incomplete) failed++
     else done++
-    process.stdout.write(`[write] ${entry.topic} → ${join(researchDir, `${s}.md`)}` +
-      (isIncomplete(entry) ? " (incomplete)" : "") + "\n")
+    process.stdout.write(`[write] ${entry.topic} → ${path}` + (incomplete ? " (incomplete)" : "") + "\n")
   }
   const total = regenerateReadme(researchDir)
   process.stdout.write(`\nWrote ${results.length} report(s): ${done} complete, ${failed} incomplete. ` +
     `README index now lists ${total}. Output dir: ${researchDir}\n`)
+}
+
+function cmdWriteOne(resultFile, researchDir, date) {
+  if (!resultFile || !researchDir || !date) {
+    die("usage: cli.mjs write-one <result-json-file> <research-dir> <date>")
+  }
+  if (!existsSync(resultFile)) die(`Result file not found: ${resultFile}`, 2)
+  mkdirSync(researchDir, { recursive: true })
+
+  const entry = JSON.parse(readFileSync(resultFile, "utf8"))
+  if (entry === null || typeof entry !== "object" || Array.isArray(entry)) {
+    die("write-one expects a single {topic, slug, report, error} object, not an array.")
+  }
+
+  const { path, incomplete } = writeEntry(entry, researchDir, date)
+  const total = regenerateReadme(researchDir)
+  process.stdout.write(`[write] ${entry.topic} → ${path}` + (incomplete ? " (incomplete)" : "") +
+    `\nREADME index now lists ${total}. Output dir: ${researchDir}\n`)
 }
 
 function cmdReadme(researchDir) {
@@ -110,9 +141,12 @@ switch (cmd) {
   case "write":
     cmdWrite(rest[0], rest[1], rest[2])
     break
+  case "write-one":
+    cmdWriteOne(rest[0], rest[1], rest[2])
+    break
   case "readme":
     cmdReadme(rest[0])
     break
   default:
-    die("usage: cli.mjs <todo|write|readme> ...", 2)
+    die("usage: cli.mjs <todo|write|write-one|readme> ...", 2)
 }
