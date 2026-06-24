@@ -8,8 +8,13 @@
   "plugins": [
     {
       "name": "skills",
-      "source": "./src",
+      "source": "./plugins/skills",
       "description": "A collection of skills"
+    },
+    {
+      "name": "cli",
+      "source": "./plugins/cli",
+      "description": "Skills for driving common command-line tools"
     }
   ]
 }
