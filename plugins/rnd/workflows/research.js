@@ -81,7 +81,7 @@ async function withRetry(thunk, { label, isEmpty }) {
 // __tests__/research.limiter.test.mjs via the same block-extraction trick.
 //
 // Tune MAX_CONCURRENT_AGENTS down if you still see 429s, up to go faster.
-const MAX_CONCURRENT_AGENTS = 4
+const MAX_CONCURRENT_AGENTS = 8
 
 // createLimiter(n) returns a function that takes a thunk and runs it only once
 // fewer than n thunks are in flight, queueing the rest. Each call gets its own
