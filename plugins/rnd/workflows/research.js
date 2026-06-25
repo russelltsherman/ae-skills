@@ -112,6 +112,30 @@ function createLimiter(limit) {
 const gate = createLimiter(MAX_CONCURRENT_AGENTS)
 const gatedAgent = (...callArgs) => gate(() => agent(...callArgs))
 
+// --- fetch label (testable) ---------------------------------------------------
+// The Fetch-phase progress labels were showing "fetch:unknown" whenever a search
+// agent returned a URL that `new URL()` rejects — most commonly a scheme-less
+// URL like "example.com/page". Recover a hostname by retrying with an https://
+// prefix, and when even that fails fall back to a short slug of the source title
+// so the operator still sees *what* is being fetched, not "unknown". Pure JS, so
+// it is unit-tested in isolation by __tests__/research.label.test.mjs.
+const fetchHost = (url) => {
+  if (typeof url !== "string" || !url.trim()) return null
+  const strip = (h) => h.replace(/^www\./, "")
+  try { return strip(new URL(url).hostname) } catch {}
+  // No scheme? Prepend https:// and retry (handles "example.com/x", "//host/x").
+  try { return strip(new URL("https://" + url.replace(/^\/+/, "")).hostname) } catch {}
+  return null
+}
+const fetchLabel = (source) => {
+  const host = fetchHost(source && source.url)
+  if (host) return "fetch:" + host
+  const title = ((source && source.title) || "").trim().replace(/\s+/g, " ")
+  if (title) return "fetch:" + title.slice(0, 40)
+  return "fetch:unknown"
+}
+// --- end fetch label ----------------------------------------------------------
+
 // ─── Schemas ───
 const SCOPE_SCHEMA = {
   type: "object", required: ["question", "angles", "summary"],
@@ -296,13 +320,12 @@ const searchResults = await pipeline(
     }
     return parallel(
       novel.map(source => () => {
-        let host = "unknown"
-        try { host = new URL(source.url).hostname.replace(/^www\./, "") } catch {}
+        const label = fetchLabel(source)
         return withRetry(() => gatedAgent(FETCH_PROMPT(source, searchResult.angle), {
-          label: "fetch:" + host,
+          label,
           phase: "Fetch",
           schema: EXTRACT_SCHEMA,
-        }), { label: "fetch:" + host, isEmpty: isEmptyExtract }).then(ext => {
+        }), { label, isEmpty: isEmptyExtract }).then(ext => {
           // User-skip → null; drop it (filtered by searchResults.flat().filter(Boolean))
           // rather than throwing into .catch() and mislabeling it "unreliable".
           if (!ext) return null
