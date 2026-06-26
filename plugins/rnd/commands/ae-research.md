@@ -1,7 +1,7 @@
 ---
 description: Research one ad-hoc topic, or a whole topics file (@-prefixed), with the resilient research workflow — saving a cited Markdown report per topic.
-argument-hint: "[topic | @topics-file]"
-allowed-tools: Read, Write, Bash, Workflow
+argument-hint: "[--ingest] [topic | @topics-file]"
+allowed-tools: Read, Write, Bash, Workflow, Skill
 ---
 
 # Research
@@ -30,7 +30,13 @@ always call the helper.
 
 ### 0. Determine the mode and build the to-do list
 
-Inspect `$ARGUMENTS`:
+First, **extract the `--ingest` flag.** If `$ARGUMENTS` contains the token `--ingest` (anywhere),
+set `INGEST=true` and remove that token; otherwise `INGEST=false`. The remaining string is the mode
+argument used below — so `--ingest` composes with all three modes (`--ingest "topic"`,
+`--ingest @topics.md`, or a bare `--ingest`). `--ingest` opts into step 4 (push this run's reports
+into the OKF knowledge base); without it, nothing touches the vault.
+
+Inspect the remaining `$ARGUMENTS`:
 
 - **Empty** → batch mode, `TOPICS_FILE=topics.md`. Go to "batch to-do" below.
 - **Starts with `@`** → batch mode. Strip the leading `@`; the remainder is `TOPICS_FILE`. Go to
@@ -107,6 +113,29 @@ the final state is always produced by the tested helper.
   incomplete reports, how many topics were already done (skipped in step 0, batch only), and the
   output directory (`research/`). For single mode this is just the one topic.
 
+### 4. Ingest into the knowledge base (only when `--ingest`)
+
+If `INGEST` is false (step 0), **skip this step entirely** — the run is done and the vault is
+untouched. If `INGEST` is true:
+
+- Get the list of this run's **complete** report paths (incomplete reports are skipped — they'd fail
+  okf's completeness gate) from the same results file written in step 2:
+
+  ```bash
+  node "${CLAUDE_PLUGIN_ROOT}/scripts/batch-research/cli.mjs" complete-paths /tmp/ae-research-results.json research
+  ```
+
+  It prints a JSON array of `research/<slug>.md` paths (empty if none survived).
+
+- If the array is empty, tell the user there are no complete reports to ingest and stop.
+- Otherwise invoke the **`okf` skill** (via the `Skill` tool) to ingest those files. Ask it to ingest
+  each listed report **as a source**, using each file's own path as the source's `resource`. okf owns
+  the rest: it locates the vault (Step 0 of its own flow — it will ask for `vault_path` if
+  `.claude/okf.local.md` is missing rather than guess), runs its per-source completeness gate, writes
+  the `sources/` (and any `concepts/`/`entities/`) pages, appends a `log.md` entry, and runs its
+  validator.
+- Surface okf's per-source PASS/FAIL summary alongside the step-3 research summary.
+
 ## Notes
 
 - **Determinism:** topics are never silently dropped and reports are always written by tested code
@@ -122,6 +151,11 @@ the final state is always produced by the tested helper.
   keeps every report completed so far — re-run to resume at topic granularity.
 - **Single mode does not skip:** naming a topic always re-runs it and overwrites
   `research/<slug>.md`.
+- **`--ingest` (opt-in):** pushes only **this run's complete reports** into the OKF knowledge base
+  via the `okf` skill (step 4); incomplete reports are skipped. okf owns vault resolution (prompting
+  for `vault_path` if unconfigured) and the per-source completeness gate, so a research report is
+  ingested only if it genuinely holds findings. Runs without the flag never touch the vault. Requires
+  the `okf` plugin to be installed.
 - **The report format** (sections, the `_stats_` footer including `retriesUsed`, the incomplete
   marker) is defined and tested in `${CLAUDE_PLUGIN_ROOT}/scripts/batch-research/lib.mjs` — change
   it there, not here.

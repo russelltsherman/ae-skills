@@ -22,6 +22,12 @@
 //
 //   readme <research-dir>
 //       Regenerate research-dir/README.md from the reports on disk.
+//
+//   complete-paths <results-json-file> <research-dir>
+//       Read the same {topic, slug, report, error} array as `write` and print a
+//       JSON array of research-dir/<slug>.md paths for the COMPLETE reports only
+//       (incomplete ones are skipped). Writes nothing. Used by /ae-research
+//       --ingest to decide which fresh reports to hand to the okf skill.
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from "node:fs"
 import { join, basename } from "node:path"
@@ -126,6 +132,22 @@ function cmdWriteOne(resultFile, researchDir, date) {
     `\nREADME index now lists ${total}. Output dir: ${researchDir}\n`)
 }
 
+// Print a JSON array of research-dir/<slug>.md paths for the COMPLETE reports in
+// a results array (incomplete ones skipped). Read-only — touches no disk. The
+// slug/path derivation mirrors writeEntry so the paths match the files on disk.
+function cmdCompletePaths(resultsFile, researchDir) {
+  if (!resultsFile || !researchDir) {
+    die("usage: cli.mjs complete-paths <results-json-file> <research-dir>")
+  }
+  if (!existsSync(resultsFile)) die(`Results file not found: ${resultsFile}`, 2)
+  const results = JSON.parse(readFileSync(resultsFile, "utf8"))
+  if (!Array.isArray(results)) die("Results JSON must be an array of {topic, slug, report, error}.")
+  const paths = results
+    .filter((entry) => !isIncomplete(entry))
+    .map((entry) => join(researchDir, `${entry.slug || slug(entry.topic)}.md`))
+  process.stdout.write(JSON.stringify(paths) + "\n")
+}
+
 function cmdReadme(researchDir) {
   if (!researchDir) die("usage: cli.mjs readme <research-dir>")
   if (!existsSync(researchDir)) die(`Research dir not found: ${researchDir}`, 2)
@@ -147,6 +169,9 @@ switch (cmd) {
   case "readme":
     cmdReadme(rest[0])
     break
+  case "complete-paths":
+    cmdCompletePaths(rest[0], rest[1])
+    break
   default:
-    die("usage: cli.mjs <todo|write|write-one|readme> ...", 2)
+    die("usage: cli.mjs <todo|write|write-one|readme|complete-paths> ...", 2)
 }

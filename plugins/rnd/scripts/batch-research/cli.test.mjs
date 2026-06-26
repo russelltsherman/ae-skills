@@ -171,3 +171,64 @@ test("write renders every entry in the array and indexes them", () => {
     rmSync(dir, { recursive: true, force: true })
   }
 })
+
+// --- complete-paths (the /ae-research --ingest seam) ---
+
+test("complete-paths returns only the complete reports' paths, in input order", () => {
+  const dir = tmp()
+  try {
+    const researchDir = join(dir, "research")
+    const resultsFile = join(dir, "results.json")
+    writeFileSync(
+      resultsFile,
+      JSON.stringify([
+        FULL_ENTRY, // complete
+        { topic: "domain driven design", slug: "domain-driven-design", report: { findings: [] }, error: null }, // incomplete: no findings
+        { topic: "behavior driven design", slug: "behavior-driven-design", report: null, error: "timed out" }, // incomplete: error
+        { topic: "test driven design", slug: "test-driven-design", report: { findings: [{ claim: "c", confidence: "high", sources: [], evidence: "e" }] }, error: null }, // complete
+      ])
+    )
+    const out = run(["complete-paths", resultsFile, researchDir], dir)
+    const paths = JSON.parse(out)
+    assert.deepEqual(paths, [
+      join(researchDir, "spec-driven-design.md"),
+      join(researchDir, "test-driven-design.md"),
+    ])
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test("complete-paths returns [] when every report is incomplete", () => {
+  const dir = tmp()
+  try {
+    const researchDir = join(dir, "research")
+    const resultsFile = join(dir, "results.json")
+    writeFileSync(
+      resultsFile,
+      JSON.stringify([
+        { topic: "a", slug: "a", report: null, error: "boom" },
+        { topic: "b", slug: "b", report: { findings: [] }, error: null },
+      ])
+    )
+    const out = run(["complete-paths", resultsFile, researchDir], dir)
+    assert.deepEqual(JSON.parse(out), [])
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test("complete-paths derives the slug from the topic when slug is omitted", () => {
+  const dir = tmp()
+  try {
+    const researchDir = join(dir, "research")
+    const resultsFile = join(dir, "results.json")
+    const { slug: _slug, ...noSlug } = FULL_ENTRY
+    writeFileSync(resultsFile, JSON.stringify([noSlug]))
+    const out = run(["complete-paths", resultsFile, researchDir], dir)
+    // Same path writeEntry would produce — slug("spec driven design").
+    assert.deepEqual(JSON.parse(out), [join(researchDir, "spec-driven-design.md")])
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})

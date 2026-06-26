@@ -6,7 +6,9 @@ steps are retried before degrading gracefully:
 
 - **`/ae-research`** — drive the resilient `research` deep-research workflow on a single topic, or
   over a whole topics file (`@file`), writing one cited Markdown report per topic. A reproduction of
-  the built-in `deep-research` workflow + a `withRetry` wrapper.
+  the built-in `deep-research` workflow + a `withRetry` wrapper. Pass `--ingest` to also push this
+  run's complete reports into the OKF knowledge base via the `okf` skill (incomplete reports are
+  skipped; requires the `okf` plugin).
 - **`/ae-code-review`** — review the current diff for correctness bugs and
   reuse/simplification/efficiency cleanups at a chosen effort level (`low`/`medium` inline,
   `high`/`xhigh`/`max` via the `review` workflow). A reproduction of the built-in `code-review`
