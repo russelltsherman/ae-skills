@@ -1,0 +1,22 @@
+[
+  {"query": "add this to my knowledge base: https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f", "should_trigger": true},
+  {"query": "save these takeaways to my second brain — the big one is that OKF only requires a `type` field and everything else is optional", "should_trigger": true},
+  {"query": "drop this pdf into my notes, it's in ~/Downloads/attention-is-all-you-need.pdf", "should_trigger": true},
+  {"query": "what do i know about the llm-wiki pattern?", "should_trigger": true},
+  {"query": "whats in my kb about obsidian — did i ever write down why i picked it over logseq", "should_trigger": true},
+  {"query": "lint my knowledge base and tell me what's stale or contradictory", "should_trigger": true},
+  {"query": "can you capture a page in my vault about the open knowledge format spec, here's the link https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md", "should_trigger": true},
+  {"query": "check my second brain for orphan pages and broken wikilinks", "should_trigger": true},
+  {"query": "i just read a good article on RAG vs long context, save the key points into my KB so i don't forget", "should_trigger": true},
+  {"query": "remind me what my notes say about the okf type taxonomy", "should_trigger": true},
+  {"query": "fix the bug in tools/okf-validate/okf_validate.py where it crashes on an out-of-range timestamp like 2026-13-99", "should_trigger": false},
+  {"query": "add a logging note to the ingest function in this python module so we can see when it's called", "should_trigger": false},
+  {"query": "what is the open knowledge format and who created it?", "should_trigger": false},
+  {"query": "summarize this article for me real quick: https://example.com/some-blog-post", "should_trigger": false},
+  {"query": "create a new markdown file documenting the REST API endpoints for this repo", "should_trigger": false},
+  {"query": "review my PR that changes the validator's frontmatter regex to handle CRLF", "should_trigger": false},
+  {"query": "what does SCHEMA.md say about reserved filenames again?", "should_trigger": false},
+  {"query": "add obsidian to the devDependencies in package.json", "should_trigger": false},
+  {"query": "i'm in a meeting taking notes, can you help me clean them up and format them as markdown", "should_trigger": false},
+  {"query": "explain how wikilinks actually resolve in obsidian across folders", "should_trigger": false}
+]

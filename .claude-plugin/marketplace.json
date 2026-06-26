@@ -20,6 +20,11 @@
       "name": "rnd",
       "source": "./plugins/rnd",
       "description": "Skills for research and development workflows"
+    },
+    {
+      "name": "okf",
+      "source": "./plugins/okf",
+      "description": "Personal OKF knowledge-base maintainer: ingest, query, and lint an Obsidian-browsed vault"
     }
   ]
 }
