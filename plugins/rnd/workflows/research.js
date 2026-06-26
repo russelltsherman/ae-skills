@@ -136,6 +136,33 @@ const fetchLabel = (source) => {
 }
 // --- end fetch label ----------------------------------------------------------
 
+// --- salvage findings (testable) ----------------------------------------------
+// When the synthesize agent exhausts its retries (returns null / throws), the run
+// must NOT return an empty report — the Verify phase already confirmed real claims.
+// salvageFindings turns each confirmed claim into a REPORT_SCHEMA-shaped finding so a
+// synthesis failure degrades to "verified-but-unmerged findings" instead of nothing.
+// Pure JS (reads only the confirmed-claim objects), so it is unit-tested in isolation
+// by __tests__/research.salvage.test.mjs via the same block-extraction trick.
+// confRank is defined HERE (once) and reused by the Synthesize block below — do not
+// redeclare it there.
+const confRank = { high: 0, medium: 1, low: 2 }
+const salvageFindings = (confirmed) => (confirmed || []).map((c) => {
+  const verdicts = Array.isArray(c.verdicts) ? c.verdicts : []
+  const positive = verdicts.filter((v) => v && !v.refuted)
+  const best = positive.slice().sort((a, b) => confRank[a.confidence] - confRank[b.confidence])[0]
+  const refutedVotes = typeof c.refutedVotes === "number"
+    ? c.refutedVotes
+    : verdicts.filter((v) => v && v.refuted).length
+  return {
+    claim: c.claim,
+    confidence: best ? best.confidence : "low",
+    sources: c.sourceUrl ? [c.sourceUrl] : [],
+    evidence: (best && best.evidence) || c.quote || "",
+    vote: (verdicts.length - refutedVotes) + "-" + refutedVotes,
+  }
+})
+// --- end salvage findings ------------------------------------------------------
+
 // ─── Schemas ───
 const SCOPE_SCHEMA = {
   type: "object", required: ["question", "angles", "summary"],
@@ -193,7 +220,7 @@ const VERDICT_SCHEMA = {
 const REPORT_SCHEMA = {
   type: "object", required: ["summary", "findings", "caveats"],
   properties: {
-    summary: { type: "string" },
+    summary: { type: "string", maxLength: 2500 },
     findings: { type: "array", items: {
       type: "object", required: ["claim", "confidence", "sources", "evidence"],
       properties: {
@@ -409,7 +436,7 @@ if (confirmed.length === 0) {
 
 // ─── Synthesize ───
 phase("Synthesize")
-const confRank = { high: 0, medium: 1, low: 2 }
+// confRank is defined in the "salvage findings (testable)" block above.
 const block = confirmed.map((c, i) => {
   const best = c.verdicts.filter(v => !v.refuted).sort((a, b) => confRank[a.confidence] - confRank[b.confidence])[0]
   return "### [" + i + "] " + c.claim + "\n" +
@@ -431,23 +458,26 @@ const report = await withRetry(() => gatedAgent(
   "1. Identify claims that say the same thing — merge them, combine their sources.\n" +
   "2. Group related claims into coherent findings. Each finding should directly address the research question.\n" +
   "3. Assign confidence per finding: high (multiple primary sources, unanimous votes), medium (secondary sources or split votes), low (single source or blog-quality).\n" +
-  "4. Write a 3-5 sentence executive summary answering the research question.\n" +
+  "4. Write a SHORT executive summary: 3-5 sentences, roughly 1200 characters and NEVER more than 2500. Do NOT put claim-level detail, quotes, evidence, or source lists in the summary — every claim belongs in `findings`, not in `summary`.\n" +
   "5. Note caveats: what's uncertain, what sources were weak, what time-sensitivity applies.\n" +
-  "6. List 2-4 open questions that emerged but weren't answered.\n\nStructured output only.",
+  "6. List 2-4 open questions that emerged but weren't answered.\n\n" +
+  "## Output contract (read carefully)\n" +
+  "Return ALL of these top-level fields: `summary` (string), `findings` (array), `caveats` (string), `openQuestions` (array). `findings` is REQUIRED and is the core payload: it MUST be a non-empty array with ONE object per finding, each having `claim`, `confidence` (high|medium|low), `sources` (array of URL strings), and `evidence`. NEVER omit `findings`. NEVER fold the report body into `summary` — `summary` is a brief intro only.\n\nStructured output only.",
   { label: "synthesize", schema: REPORT_SCHEMA }
 ), { label: "synthesize", isEmpty: isEmptyReport })
 
 if (!report) {
-  // Synthesis skipped/errored — salvage the verified claims raw rather
-  // than throwing on report.findings and discarding the whole run.
+  // Synthesis skipped/errored after all retries — DON'T discard the run. The Verify
+  // phase already confirmed real claims, so degrade to those claims as unmerged
+  // findings (built by the tested salvageFindings helper) instead of findings: [].
+  const salvaged = salvageFindings(confirmed)
   return {
     question: QUESTION,
-    summary: "Synthesis step was skipped or failed — returning " + confirmed.length + " verified claims unmerged.",
-    findings: [],
-    confirmed: confirmed.map(c => ({ claim: c.claim, source: c.sourceUrl, quote: c.quote, vote: (c.verdicts.length - c.refutedVotes) + "-" + c.refutedVotes })),
+    summary: "Synthesis step was skipped or failed — returning " + confirmed.length + " verified claims as unmerged findings.",
+    findings: salvaged,
     refuted: killed.map(c => ({ claim: c.claim, vote: (c.verdicts.length - c.refutedVotes) + "-" + c.refutedVotes, source: c.sourceUrl })),
     sources: allSources.map(s => ({ url: s.url, quality: s.sourceQuality, claimCount: s.claims.length })),
-    stats: { angles: scope.angles.length, sources: allSources.length, claims: allClaims.length, verified: voted.length, confirmed: confirmed.length, killed: killed.length, afterSynthesis: 0, retriesUsed },
+    stats: { angles: scope.angles.length, sources: allSources.length, claims: allClaims.length, verified: voted.length, confirmed: confirmed.length, killed: killed.length, afterSynthesis: salvaged.length, retriesUsed },
   }
 }
 

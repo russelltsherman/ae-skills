@@ -1,6 +1,6 @@
 {
   "name": "rnd",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Research and development toolkit — skills for ADRs, PRDs, and architecture design, plus resilient deep-research (/ae-research) and workflow-backed code review (/ae-code-review): faithful reproductions of the built-in deep-research and code-review workflows, hardened with a per-task retry wrapper so failed or empty agent steps are retried before degrading gracefully.",
   "author": {
     "name": "Russell Sherman",
