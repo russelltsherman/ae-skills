@@ -40,9 +40,10 @@ Each item below becomes its own feature in `.specs/`, with its first build in a 
 
 ### eval-target
 
-- [ ] **F6. eval-target** `make evals` (D4), feature `.specs/eval-target/`. One command that runs the skills' eval cases as real, billed model runs. It sits beside F5, which never runs evals. Its parts:
+- [x] **F6. eval-target** `make evals` (D4), feature `.specs/eval-target/`. One command that runs the skills' eval cases as real, billed model runs. It sits beside F5, which never runs evals. Its parts:
   - One `claude plugin eval --eval-dir evals/<skill> .` run for every skill, or for one skill with `make evals SKILL=<skill>`.
   - The options each run needs: `--scaffold`, no baseline arm for a command-only skill, `--no-publish`, and no `--trust-plugin`.
+  - Each skill's tool grants listed in `evals/<skill>/allow-tools` and passed to its run as `--allow-tools`; the file is not an eval case and `make check` passes with it present.
   - Extra `claude plugin eval` options passed through `ARGS`.
   - Every selected skill is run even after one fails, a summary line at the end, and a non-zero exit when any skill failed, a skill with no cases included.
 

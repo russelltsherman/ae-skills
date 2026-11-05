@@ -13,6 +13,14 @@ Run from this directory. None of these make model calls.
 - `make lint-evals` — each skill has eval cases under `evals/<skill>/`, each with a goal line, matching name, `prompt.md`, graders and its context files
 - `bash tests/lints.sh` — tests for the two lint scripts
 
+## Evals
+
+Run from this directory. Evals are billed model runs; `make check` never runs them.
+
+- `make evals` — run every skill's eval cases, one `claude plugin eval` run per skill, then print a summary line
+- `make evals SKILL=<skill>` — run one skill's eval cases
+- `make evals ARGS="..."` — pass extra `claude plugin eval` options to every run, e.g. `ARGS="--runs 1"`; tool grants go in `evals/<skill>/allow-tools`, one per line
+
 ## Planning
 
 Before creating, finding or editing anything under `.specs/`, read `.specs/CLAUDE.md` and the rule file it names.
