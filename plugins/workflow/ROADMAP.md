@@ -29,7 +29,7 @@ Each item below becomes its own feature in `.specs/`, with its first build in a 
 
 ### check-target
 
-- [ ] **F5. check-target** `make check` (D3, D5), feature `.specs/check-target/`. One command that verifies the plugin and makes no model calls. Its parts:
+- [x] **F5. check-target** `make check` (D3, D5), feature `.specs/check-target/`. One command that verifies the plugin and makes no model calls. Its parts:
   - `claude plugin validate --strict .` and `claude plugin validate --profile directory .`.
   - `shellcheck` on every `.sh` file, except under `results/` and `*-workspace/` folders.
   - The skill README lint: each `docs/skills/<skill>/README.md` against `docs/skills/README_TEMPLATE.md` (F4) and the skill's eval cases.
