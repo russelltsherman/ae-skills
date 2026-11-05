@@ -14,7 +14,7 @@
     {
       "name": "workflow",
       "source": "./plugins/workflow",
-      "description": "Skills for driving my personal workflow."
+      "description": "Skills for how I work with Claude in any project or session, plus repo-wide policies."
     }
   ]
 }

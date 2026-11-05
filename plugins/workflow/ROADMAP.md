@@ -22,10 +22,10 @@ Each item below becomes its own feature in `.specs/`, with its first build in a 
 
 ### Foundation
 
-- [ ] **F1. Plugin scaffold**: `.claude-plugin/plugin.json` and the `workflow` entry in the `ae-skills` marketplace (`../../.claude-plugin/marketplace.json`).
-- [ ] **F2. Project `CLAUDE.md`** at `.claude/CLAUDE.md` (D2): commands, conventions, things Claude gets wrong.
-- [ ] **F3. Root intent, roadmap and planning rules** (D1, D7): `INTENT.md`, this file, and `.specs/_rules/`.
-- [ ] **F4. Skill README template** (D9): `docs/skills/README_TEMPLATE.md`, which the README lint in F5 checks against.
+- [x] **F1. Plugin scaffold**: `.claude-plugin/plugin.json` and the `workflow` entry in the `ae-skills` marketplace (`../../.claude-plugin/marketplace.json`).
+- [x] **F2. Project `CLAUDE.md`** at `.claude/CLAUDE.md` (D2): commands, conventions, things Claude gets wrong.
+- [x] **F3. Root intent, roadmap and planning rules** (D1, D7): `INTENT.md`, this file, and `.specs/_rules/`.
+- [x] **F4. Skill README template** (D9): `docs/skills/README_TEMPLATE.md`, which the README lint in F5 checks against.
 
 ### check-target
 
