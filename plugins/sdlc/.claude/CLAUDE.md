@@ -5,6 +5,7 @@ This directory is the `sdlc` Claude Code plugin, published in the `ae-skills` ma
 ## Commands
 
 - Check the harness: `make check`. It validates the plugin, runs `shellcheck`, lints every `intent.md`, `spec.md` and `plan.md` in `.specs/`, and runs the `bats` tests in `tests/`, with no model calls. Run it before calling any change done; a failed step means the change is not done.
+- Run the skills' evals: `make evals` runs every `evals/<skill>/` that has a matching `skills/<skill>/`; `make evals SKILL=<skill>` runs one; `ARGS="…"` passes extra `claude plugin eval` options to every run, e.g. `make evals SKILL=intent ARGS="--runs 1"`. These are real, billed model runs, never part of `make check`. The operator trusts the plugin directory once by running `make evals` in a terminal and answering `y`; after that, Claude can run it.
 - Try work in progress: `claude --plugin-dir .`. Never use an unreleased skill to write its own intent, spec or plan (INTENT.md C4).
 - Tag a release: `claude plugin tag .` after bumping `version` in `.claude-plugin/plugin.json`.
 

@@ -61,7 +61,7 @@ F1, F2 and F3 are one feature, `.specs/plugin-foundation/`.
 
 ### eval-target
 
-- [ ] **F6. eval-target** `make evals` (D11), feature `.specs/eval-target/`. One command that runs the skills' eval cases as real, billed model runs. It sits beside F5, which never runs evals. Its parts:
+- [x] **F6. eval-target** `make evals` (D11), feature `.specs/eval-target/`. One command that runs the skills' eval cases as real, billed model runs. It sits beside F5, which never runs evals. Its parts:
   - One `claude plugin eval --eval-dir evals/<skill> .` run for every skill, or for one skill with `make evals SKILL=<skill>`.
   - The options each run needs, such as `--scaffold` and `--no-publish`, settled in its own intent.
   - Extra `claude plugin eval` options passed through `ARGS`.
