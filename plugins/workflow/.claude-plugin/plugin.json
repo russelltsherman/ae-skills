@@ -1,6 +1,6 @@
 {
   "name": "workflow",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Skills for how I work with Claude in any project or session, plus repo-wide policies.",
   "author": {
     "name": "Russell Sherman",
