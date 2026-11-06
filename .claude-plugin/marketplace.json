@@ -9,7 +9,7 @@
     {
       "name": "sdlc",
       "source": "./plugins/sdlc",
-      "description": "Skills for driving AI Native Software Development Lifecycle"
+      "description": "an implementation of Anthropics AI Native Software Development Lifecycle"
     },
     {
       "name": "workflow",

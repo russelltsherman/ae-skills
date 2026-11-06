@@ -1,0 +1,10 @@
+{
+  "name": "sdlc",
+  "version": "0.1.0",
+  "description": "an implementation of Anthropics AI Native Software Development Lifecycle",
+  "author": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "keywords": ["skills"]
+}
