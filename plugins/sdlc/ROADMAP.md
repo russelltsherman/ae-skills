@@ -47,11 +47,11 @@ F1, F2 and F3 are one feature, `.specs/plugin-foundation/`.
 
 ### init
 
-- [ ] **F4. Minimal `init`**: create `.specs/` with `_rules/` copied from the plugin (D3), the opt-in marker and the `CLAUDE.md` section (D4), enough for the plugin's own repo to adopt the plugin.
+- [x] **F4. Minimal `init`**: create `.specs/` with `_rules/` copied from the plugin (D3), the opt-in marker and the `CLAUDE.md` section (D4), enough for the plugin's own repo to adopt the plugin.
 
 ### check-target
 
-- [ ] **F5. check-target** `make check` (D6, D7), feature `.specs/check-target/`. One command that verifies the harness and makes no model calls; the feedback loop for building the harness. Its parts:
+- [x] **F5. check-target** `make check` (D6, D7), feature `.specs/check-target/`. One command that verifies the harness and makes no model calls; the feedback loop for building the harness. Its parts:
   - `claude plugin validate --strict .` and `claude plugin validate --profile directory .`.
   - `shellcheck` on every shell script, except under `refs/` and `skills/*-workspace/`.
   - The document lint: every `intent.md`, `spec.md` and `plan.md` in `.specs/` against its template in `.specs/_rules/`, shipped in `scripts/` so later hooks and skills can run it in any project.

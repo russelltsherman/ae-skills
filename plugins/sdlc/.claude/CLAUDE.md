@@ -4,7 +4,7 @@ This directory is the `sdlc` Claude Code plugin, published in the `ae-skills` ma
 
 ## Commands
 
-- Validate the plugin: `claude plugin validate --strict .` and `claude plugin validate --profile directory .` (both must exit 0). `make check` replaces these once F5 lands; after that, run `make check` before calling any change done.
+- Check the harness: `make check`. It validates the plugin, runs `shellcheck`, lints every `intent.md`, `spec.md` and `plan.md` in `.specs/`, and runs the `bats` tests in `tests/`, with no model calls. Run it before calling any change done; a failed step means the change is not done.
 - Try work in progress: `claude --plugin-dir .`. Never use an unreleased skill to write its own intent, spec or plan (INTENT.md C4).
 - Tag a release: `claude plugin tag .` after bumping `version` in `.claude-plugin/plugin.json`.
 
