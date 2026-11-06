@@ -1,0 +1,11 @@
+# Goal: Checks that in an empty git project, init runs its script, reports the four rule files, the marker and .claude/CLAUDE.md as created, tells the operator to review and commit, and commits nothing.
+schema_version: "1.1"
+name: fresh-project
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The skill runs scripts/init.sh once with the plugin root and the project directory.
+  Its report shows "created" for .specs/_rules/intent_template.md, naming.md,
+  plan_template.md and spec_template.md, .claude/sdlc.md and .claude/CLAUDE.md.
+  The final message passes the report on and tells the operator to review and
+  commit the files. No git add or git commit is run.

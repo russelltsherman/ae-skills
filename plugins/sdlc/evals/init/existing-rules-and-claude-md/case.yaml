@@ -1,0 +1,11 @@
+# Goal: Checks that in a project that already has its own rule files and a .claude/CLAUDE.md without the sdlc section, init reports the rule files as skipped, the marker as created and .claude/CLAUDE.md as updated, and commits nothing.
+schema_version: "1.1"
+name: existing-rules-and-claude-md
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The skill runs scripts/init.sh once. Its report shows the four rule files as
+  "skipped ... (exists)", .claude/sdlc.md as "created", and
+  "updated .claude/CLAUDE.md (added sdlc section)". The final message passes the
+  report on and tells the operator to review and commit. No git add or git
+  commit is run.

@@ -1,0 +1,11 @@
+# Goal: Checks that in a project already set up for sdlc, init reports every path as skipped, says there is nothing to commit, and changes and commits nothing.
+schema_version: "1.1"
+name: already-initialized
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The skill runs scripts/init.sh once. Its report shows the four rule files and
+  .claude/sdlc.md as "skipped ... (exists)" and .claude/CLAUDE.md as
+  "skipped .claude/CLAUDE.md (has sdlc section)". The final message says the
+  project is already set up and there is nothing to commit. No git add or git
+  commit is run.
