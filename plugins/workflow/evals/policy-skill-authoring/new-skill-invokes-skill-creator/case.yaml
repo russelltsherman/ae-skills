@@ -1,0 +1,7 @@
+# Goal: Checks that skill-creator is invoked through the Skill tool before any `SKILL.md` is written.
+schema_version: "1.1"
+name: new-skill-invokes-skill-creator
+expected_outcome: |
+  The agent invokes skill-creator through the Skill tool as its first step, before writing any SKILL.md for the new skill.
+context:
+  scaffold_script: place-files.sh

@@ -1,0 +1,7 @@
+# Goal: Checks that removing `disable-model-invocation: true` from a skill is treated as a description change that requires description optimization.
+schema_version: "1.1"
+name: dropping-command-only-flag-runs-optimization
+expected_outcome: |
+  The agent treats removing disable-model-invocation: true from standup as a change to its description and includes description optimization as a required step.
+context:
+  scaffold_script: place-files.sh

@@ -1,0 +1,7 @@
+# Goal: Checks that the fix is made without starting the eval loop and the commit message cites the typo exemption.
+schema_version: "1.1"
+name: typo-fix-skips-loop
+expected_outcome: |
+  The agent fixes the spelling of "recieve" in the release-notes SKILL.md without writing test cases or starting eval runs, and the commit message says the edit was made under the typo exemption.
+context:
+  scaffold_script: place-files.sh

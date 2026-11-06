@@ -1,0 +1,7 @@
+# Goal: Checks that skill-creator is invoked for a one-sentence change to a skill's guidance.
+schema_version: "1.1"
+name: wording-change-runs-loop
+expected_outcome: |
+  The agent treats the one-sentence change as a skill change and invokes skill-creator through the Skill tool before editing the SKILL.md.
+context:
+  scaffold_script: place-files.sh

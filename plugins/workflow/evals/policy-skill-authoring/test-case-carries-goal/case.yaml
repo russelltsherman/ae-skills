@@ -1,0 +1,7 @@
+# Goal: Checks that each new case's `case.yaml` opens with a `# Goal: Checks that …` comment, inside a case folder with `prompt.md` and `graders/`, and that no `evals.json` is written.
+schema_version: "1.1"
+name: test-case-carries-goal
+expected_outcome: |
+  Each new test case is a folder under evals/release-notes/ at the plugin root with prompt.md, case.yaml and graders/, case.yaml line 1 is a "# Goal: Checks that …" comment, and no evals.json is written.
+context:
+  scaffold_script: place-files.sh

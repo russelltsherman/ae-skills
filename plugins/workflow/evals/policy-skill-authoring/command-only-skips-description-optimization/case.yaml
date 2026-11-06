@@ -1,0 +1,7 @@
+# Goal: Checks that description optimization is not listed as required for a new command-only skill, and that the reply says it is skipped because the skill is command-only.
+schema_version: "1.1"
+name: command-only-skips-description-optimization
+expected_outcome: |
+  The agent's plan for building the new command-only /retro skill does not list description optimization as required, and says it is skipped because the skill is command-only.
+context:
+  scaffold_script: place-files.sh

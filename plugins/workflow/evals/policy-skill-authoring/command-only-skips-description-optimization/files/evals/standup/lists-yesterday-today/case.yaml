@@ -1,0 +1,5 @@
+# Goal: Checks that the standup lists yesterday's and today's work as two short bullet lists.
+schema_version: "1.1"
+name: lists-yesterday-today
+expected_outcome: |
+  Two short bullet lists, Yesterday and Today.

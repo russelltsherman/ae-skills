@@ -1,0 +1,7 @@
+# Goal: Checks that, for a change to a skill without `disable-model-invocation: true`, baseline runs are still planned alongside the with-skill runs.
+schema_version: "1.1"
+name: model-invoked-skill-runs-baseline
+expected_outcome: |
+  The agent's eval plan for the release-notes change includes baseline runs alongside the with-skill runs.
+context:
+  scaffold_script: place-files.sh

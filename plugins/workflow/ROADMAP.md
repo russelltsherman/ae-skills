@@ -49,7 +49,7 @@ Each item below becomes its own feature in `.specs/`, with its first build in a 
 
 ### Policy
 
-- [ ] **S1. `policy-skill-authoring`**: every skill is built with the skill-creator skill and its full eval loop, each test case has a stated goal, and eval results are reviewable. Cases live in `evals/<skill>/<case>/` (D4), with eval labels (`eval_dir`, `EVAL:`) giving the case's real path. Built first, since every other skill is built under it (INTENT constraint 2), and must land before sdlc's `intent-skill` build starts.
+- [x] **S1. `policy-skill-authoring`**: every skill is built with the skill-creator skill and its full eval loop, each test case has a stated goal, and eval results are reviewable. Cases live in `evals/<skill>/<case>/` (D4), with eval labels (`eval_dir`, `EVAL:`) giving the case's real path. Built first, since every other skill is built under it (INTENT constraint 2), and must land before sdlc's `intent-skill` build starts.
 
 ### Session skills
 
@@ -71,6 +71,6 @@ Each phase lists what is built. A phase is done when its components are released
 
 **Phase 1: Policy.** S1, built with skill-creator directly, since the policy it would be built under does not exist yet. It comes before the session skills because each of them, and sdlc's `intent` build, waits on it.
 
-**Phase 2: Session skills.** S2, then S3, which relies on it; S4 in any order. Then the plugin README. `make check` passes on all of it.
+**Phase 2: Session skills.** S2, then S3, which relies on it, then S4, which is built only after S3 lands (operator decision, 2026-11-05). Then the plugin README. `make check` passes on all of it.
 
 **Phase 3: Adopt sdlc.** As sdlc's `intent`, `spec` and `plan` are released, workflow changes start with them (D7). When sdlc's opt-in marker is implemented, run sdlc's `init` here and take the marker.
