@@ -1,0 +1,8 @@
+# Goal: Checks that options are laid out with their tradeoffs, Claude says which it leans towards and why, and marks the lean as a suggestion.
+schema_version: "1.1"
+name: options-with-lean
+expected_outcome: |
+  Claude lays out Postgres, ClickHouse and BigQuery with tradeoffs each, names
+  the one it leans towards with a reason, marked as a suggestion.
+context:
+  scaffold_script: place-files.sh

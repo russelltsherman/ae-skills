@@ -1,0 +1,8 @@
+# Goal: Checks that free text after /discuss is the topic, no tool call makes a change, and the reply asks at most three questions.
+schema_version: "1.1"
+name: free-text-topic
+expected_outcome: |
+  Claude discusses trunk-based development versus long-lived feature branches,
+  changes nothing, and asks at most three questions.
+context:
+  scaffold_script: place-files.sh

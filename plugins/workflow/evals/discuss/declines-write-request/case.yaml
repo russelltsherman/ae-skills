@@ -1,0 +1,9 @@
+# Goal: Checks that a request to write a file during a discussion is declined, nothing is written, and the reply points to /handoff once.
+schema_version: "1.1"
+name: declines-write-request
+expected_outcome: |
+  Claude writes no config.toml, says briefly that the discussion doesn't change
+  anything, and names /handoff once without offering to write it later.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

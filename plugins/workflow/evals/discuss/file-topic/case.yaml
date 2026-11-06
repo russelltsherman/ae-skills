@@ -1,0 +1,9 @@
+# Goal: Checks that a file given as the whole argument is read as the topic and no file is changed.
+schema_version: "1.1"
+name: file-topic
+expected_outcome: |
+  Claude reads docs/proposal.md and discusses its proposal (event-driven
+  invoicing from a billing.events Kafka topic replacing the nightly batch),
+  changing nothing.
+context:
+  scaffold_script: place-files.sh

@@ -2,3 +2,5 @@ skills/*-workspace/
 evals/*/results/
 # Session logs claude plugin eval writes next to a case's history.jsonl
 evals/*/*/*-*-*-*-*.jsonl
+# ...and the directory beside it holding that session's subagent logs
+evals/*/*/*-*-*-*-*/

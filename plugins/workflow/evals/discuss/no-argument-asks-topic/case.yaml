@@ -1,0 +1,8 @@
+# Goal: Checks that with no argument Claude only asks for the topic and makes no tool call that changes anything.
+schema_version: "1.1"
+name: no-argument-asks-topic
+expected_outcome: |
+  Claude replies only by asking what the user wants to discuss, without picking
+  a topic itself, and changes nothing.
+context:
+  scaffold_script: place-files.sh

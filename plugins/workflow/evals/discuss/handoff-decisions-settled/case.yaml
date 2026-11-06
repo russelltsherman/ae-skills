@@ -1,0 +1,9 @@
+# Goal: Checks that, with a handoff file as the topic, its accepted decisions are listed as settled from the topic file and its rejected ones are not reopened.
+schema_version: "1.1"
+name: handoff-decisions-settled
+expected_outcome: |
+  Postgres as the session store and the 30-day idle expiry are settled, from the
+  topic file. Per-device revocation is open. Redis is not reopened.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

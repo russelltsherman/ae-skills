@@ -1,0 +1,9 @@
+# Goal: Checks that a subagent started during a discussion is Explore or Plan and its prompt tells it to make no change.
+schema_version: "1.1"
+name: subagent-told-read-only
+expected_outcome: |
+  Claude starts an Explore or Plan agent whose prompt says to make no change,
+  and reports where the project retries requests.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

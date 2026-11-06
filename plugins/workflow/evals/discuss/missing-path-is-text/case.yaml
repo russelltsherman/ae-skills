@@ -1,0 +1,8 @@
+# Goal: Checks that a path to a missing file is reported in one line and the argument is then treated as free text.
+schema_version: "1.1"
+name: missing-path-is-text
+expected_outcome: |
+  Claude says in one line that docs/caching-plan.md names no readable file, then
+  discusses a caching plan as free text, changing nothing.
+context:
+  scaffold_script: place-files.sh

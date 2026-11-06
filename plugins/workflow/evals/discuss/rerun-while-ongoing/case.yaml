@@ -1,0 +1,9 @@
+# Goal: Checks that running /discuss again during a discussion gets a one-line reply and the topic is unchanged.
+schema_version: "1.1"
+name: rerun-while-ongoing
+expected_outcome: |
+  Claude says in one line that a discussion is already ongoing and continues the
+  monorepo discussion, not CI.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

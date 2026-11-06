@@ -1,0 +1,10 @@
+# Goal: Checks that a proposal from Claude the user didn't answer is listed as open, not settled, when the user asks for settled and open items.
+schema_version: "1.1"
+name: claude-proposal-stays-open
+expected_outcome: |
+  Version-in-the-URL-path is settled in this discussion. The idea Claude
+  proposed in its previous reply, which the user never answered, is listed as
+  open.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

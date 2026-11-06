@@ -1,0 +1,5 @@
+# /discuss runs are granted the writing tools so a failure really writes and
+# the graders see it (spec design: evals). Read-only tools need no grant.
+Write
+Edit
+Bash
