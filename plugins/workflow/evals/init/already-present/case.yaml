@@ -1,0 +1,7 @@
+# Goal: Checks that an existing .handoff/.gitignore with content other than * is left unchanged and the reply is exactly the Already present line.
+schema_version: "1.1"
+name: already-present
+expected_outcome: |
+  The agent replies with exactly one line, `Already present, left unchanged: <path>.`. .handoff/.gitignore still contains `keep me`. No tools are called.
+context:
+  scaffold_script: setup.sh

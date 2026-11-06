@@ -34,8 +34,9 @@ Each item below becomes its own feature in `.specs/`, with its first build in a 
   - `shellcheck` on every `.sh` file, except under `results/` and `*-workspace/` folders.
   - The skill README lint: each `docs/skills/<skill>/README.md` against `docs/skills/README_TEMPLATE.md` (F4) and the skill's eval cases.
   - The eval case lint: each case folder in `evals/<skill>/<case>/` (D4).
-  - A target for each check on its own (`make validate`, `make shellcheck`, `make lint-readmes`, `make lint-evals`), and `make check` running all of them even after one fails.
+  - A target for each check on its own (`make validate`, `make shellcheck`, `make lint-readmes`, `make lint-evals`, `make tests`), and `make check` running all of them even after one fails.
   - `tests/lints.sh`, the tests for the two lints.
+  - A `tests` step, also `make tests`, that runs every `tests/*.sh`.
   - The commands, listed in `.claude/CLAUDE.md` (F2).
 
 ### eval-target
@@ -55,7 +56,7 @@ Each item below becomes its own feature in `.specs/`, with its first build in a 
 
 Each is built under S1, with its eval cases in `evals/<skill>/` (D4) and its README in `docs/skills/<skill>/` (D9).
 
-- [ ] **S2. Minimal `init`**, invoked as `/workflow:init` (INTENT constraint 1): creates `.handoff/.gitignore` in a project (D6).
+- [x] **S2. Minimal `init`**, invoked as `/workflow:init` (INTENT constraint 1): creates `.handoff/.gitignore` in a project (D6).
 - [ ] **S3. `handoff`**, invoked as `/handoff`: writes a handoff of the current session (decisions, open questions, dead ends, references) to a file in `.handoff/` so a fresh session can pick it up. When `.handoff/.gitignore` is missing it directs the user to `/workflow:init` (D6). Built after S2.
 - [ ] **S4. `discuss`**, invoked as `/discuss`: starts a discussion in which the user's thinking is the product and nothing is written or changed until the discussion ends. Fits with `handoff` and `policy-skill-authoring`.
 

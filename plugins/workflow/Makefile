@@ -1,9 +1,10 @@
 # check-target and eval-target for the workflow plugin. `make check` runs every
-# check and makes no model calls; each check target runs one check on its own.
+# check and makes no model calls; each check target runs one check on its own,
+# and `make tests` runs every tests/*.sh.
 # `make evals` runs the skills' eval cases as billed model runs, and `make check`
 # never runs it.
 
-.PHONY: check validate shellcheck lint-readmes lint-evals evals
+.PHONY: check validate shellcheck lint-readmes lint-evals tests evals
 
 check:
 	@bash scripts/check.sh
@@ -19,6 +20,9 @@ lint-readmes:
 
 lint-evals:
 	@bash scripts/lint-evals.sh
+
+tests:
+	@bash scripts/tests.sh
 
 evals:
 	@SKILL="$(SKILL)" ARGS="$(ARGS)" bash scripts/evals.sh

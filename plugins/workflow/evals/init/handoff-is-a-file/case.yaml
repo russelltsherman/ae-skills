@@ -1,0 +1,7 @@
+# Goal: Checks that when .handoff is a regular file, nothing changes and the reply is exactly one Nothing changed line saying .handoff is not a directory.
+schema_version: "1.1"
+name: handoff-is-a-file
+expected_outcome: |
+  The agent replies with exactly one line, `Nothing changed: .handoff is not a directory (<path>).`. The file .handoff still contains `notes`. No tools are called.
+context:
+  scaffold_script: setup.sh

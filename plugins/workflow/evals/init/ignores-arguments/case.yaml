@@ -1,0 +1,7 @@
+# Goal: Checks that text after /workflow:init changes nothing: .handoff/.gitignore is created containing *, the reply is exactly the Created line, and no tools are called.
+schema_version: "1.1"
+name: ignores-arguments
+expected_outcome: |
+  The text after the command is ignored. The agent replies with exactly one line, `Created <path>.`, and .handoff/.gitignore contains `*`. No tools are called, and nothing else is created.
+context:
+  scaffold_script: setup.sh

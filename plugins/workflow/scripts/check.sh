@@ -3,7 +3,7 @@
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 failed=""
-for c in validate shellcheck lint-readmes lint-evals; do
+for c in validate shellcheck lint-readmes lint-evals tests; do
   bash "$dir/$c.sh" || failed="$failed $c"
 done
 

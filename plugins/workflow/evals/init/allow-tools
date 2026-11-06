@@ -1,0 +1,3 @@
+# The skill's injected line runs bash on its bundled init.sh; the eval runner
+# gates Bash out of every run unless granted, which aborts the skill.
+Bash(bash *init.sh)

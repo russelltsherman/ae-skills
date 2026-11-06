@@ -1,0 +1,7 @@
+# Goal: Checks that the project's own .gitignore is byte-for-byte unchanged when /workflow:init creates .handoff/.gitignore.
+schema_version: "1.1"
+name: project-gitignore-untouched
+expected_outcome: |
+  The agent replies with exactly one line, `Created <path>.`. The project's .gitignore still contains exactly `node_modules/`. No tools are called.
+context:
+  scaffold_script: setup.sh
