@@ -1,0 +1,8 @@
+# Goal: Checks that the handoff file is written to .handoff/ in the current directory when it is not inside a git repository.
+schema_version: "1.1"
+name: outside-git-repo
+expected_outcome: |
+  git rev-parse fails, and the handoff file is written to .handoff/ in the run's own directory, next to the placed .handoff/.gitignore.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

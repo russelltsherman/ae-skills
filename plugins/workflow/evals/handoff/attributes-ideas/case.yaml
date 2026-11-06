@@ -1,0 +1,8 @@
+# Goal: Checks that each decision and open question says who raised it and whether the user accepted, rejected or did not respond, including a tentative remark from the user that stays open.
+schema_version: "1.1"
+name: attributes-ideas
+expected_outcome: |
+  Claude's option 1 is under Accepted and option 2 under Rejected, each (Raised by Claude; ...). Limiting per API key is Accepted, (Raised by user; accepted.). Limiting per IP is an open question, (Raised by user; no response.).
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

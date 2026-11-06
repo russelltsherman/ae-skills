@@ -1,0 +1,5 @@
+# /handoff runs git rev-parse and date through Bash and writes the handoff
+# file with Write; the eval runner gates both out of every run unless granted.
+Write
+Bash(git rev-parse:*)
+Bash(date:*)

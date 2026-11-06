@@ -1,0 +1,8 @@
+# Goal: Checks that no file is created when the focus matches nothing in the session, and the one-line reply names the focus.
+schema_version: "1.1"
+name: focus-matches-nothing
+expected_outcome: |
+  The reply is exactly `Nothing to hand off: nothing in this session bears on "kubernetes".`. No file is created and Write is never called.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

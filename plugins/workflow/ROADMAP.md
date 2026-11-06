@@ -57,7 +57,7 @@ Each item below becomes its own feature in `.specs/`, with its first build in a 
 Each is built under S1, with its eval cases in `evals/<skill>/` (D4) and its README in `docs/skills/<skill>/` (D9).
 
 - [x] **S2. Minimal `init`**, invoked as `/workflow:init` (INTENT constraint 1): creates `.handoff/.gitignore` in a project (D6).
-- [ ] **S3. `handoff`**, invoked as `/handoff`: writes a handoff of the current session (decisions, open questions, dead ends, references) to a file in `.handoff/` so a fresh session can pick it up. When `.handoff/.gitignore` is missing it directs the user to `/workflow:init` (D6). Built after S2.
+- [x] **S3. `handoff`**, invoked as `/handoff`: writes a handoff of the current session (decisions, open questions, dead ends, references) to a file in `.handoff/` so a fresh session can pick it up. When `.handoff/.gitignore` is missing it directs the user to `/workflow:init` (D6). Built after S2.
 - [ ] **S4. `discuss`**, invoked as `/discuss`: starts a discussion in which the user's thinking is the product and nothing is written or changed until the discussion ends. Fits with `handoff` and `policy-skill-authoring`.
 
 ### Documentation

@@ -1,0 +1,8 @@
+# Goal: Checks that a suggestion from Claude the user never answered is under Open questions with no response, not under Accepted.
+schema_version: "1.1"
+name: unanswered-suggestion-stays-open
+expected_outcome: |
+  The risk Claude named, which the user never answered, is under Open questions ending (Raised by Claude; no response.). Writing CSV to S3 is Accepted, raised by the user.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

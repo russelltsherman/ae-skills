@@ -1,0 +1,8 @@
+# Goal: Checks that /handoff writes a file in .handoff/ with a timestamped name and every fixed section in order, records the dead end and the file reference, asks nothing first, and replies with the path and an instruction to run /clear.
+schema_version: "1.1"
+name: writes-full-handoff
+expected_outcome: |
+  A handoff file is written once to <git root>/.handoff/<YYYYMMDD-HHMM>-<slug>.md with the title and every fixed heading in order, None. in empty sections, the JSON-comments dead end with how it was found, and config.example.toml as a path only. No question is asked first. The reply gives the absolute path and says to run /clear, and no tool call follows the Write.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

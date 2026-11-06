@@ -1,0 +1,8 @@
+# Goal: Checks that a decision changed mid-session is recorded in its final form only, with the earlier form in a Was clause.
+schema_version: "1.1"
+name: records-final-position
+expected_outcome: |
+  Sessions in Postgres is the one accepted decision about session storage, with a Was: Redis clause and the reason about running one more service. Redis is not listed as a separate decision.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

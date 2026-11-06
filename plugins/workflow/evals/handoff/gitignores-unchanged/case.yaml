@@ -1,0 +1,8 @@
+# Goal: Checks that a handoff is written when .handoff/.gitignore holds something other than *, and that it and the project's .gitignore are unchanged.
+schema_version: "1.1"
+name: gitignores-unchanged
+expected_outcome: |
+  A handoff file is created in .handoff/. .handoff/.gitignore still reads exactly *.md, the project .gitignore still reads exactly node_modules/, and nothing outside .handoff/ is written.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

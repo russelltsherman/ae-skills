@@ -1,0 +1,8 @@
+# Goal: Checks that the file contains no instruction or suggestion addressed to a next step.
+schema_version: "1.1"
+name: file-names-no-next-step
+expected_outcome: |
+  The file records JSON-lines logging as Accepted. No sentence in it is addressed to whatever reads it next (no next step, no 'the spec should', no imperative bullet). The chat reply may suggest a next step.
+context:
+  scaffold_script: place-files.sh
+  history_file: history.jsonl

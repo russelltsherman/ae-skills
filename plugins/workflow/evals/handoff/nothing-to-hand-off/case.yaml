@@ -1,0 +1,7 @@
+# Goal: Checks that in an empty session no file is created besides the placed .handoff/.gitignore and the reply is one line.
+schema_version: "1.1"
+name: nothing-to-hand-off
+expected_outcome: |
+  The reply is exactly one line saying there is nothing to hand off. No file is created and Write is never called.
+context:
+  scaffold_script: place-files.sh
