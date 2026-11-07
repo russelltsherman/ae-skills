@@ -1,0 +1,11 @@
+# Goal: Checks that an intent whose constraints C1 (store a due field) and C4 (tasks keep exactly text and done) contradict each other makes the run name both constraint IDs and ask the operator about them, and that no spec.md is written and no file is written, edited or run through the shell.
+schema_version: "1.1"
+name: contradicting-constraints
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The intent asks for a due date stored as a `due` field on each task (C1)
+  and also says each task keeps exactly the fields `text` and `done` and no
+  others (C4). Both cannot hold. The run raises the contradiction, naming C1
+  and C4, and asks the operator how to resolve it, before writing anything.
+  No spec.md is written and intent.md is not edited.

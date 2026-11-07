@@ -1,0 +1,12 @@
+# Goal: Checks that work on the existing export command is written under that feature's slug as .specs/export-command/<YYYYMMDD-HHMM>-<change>/intent.md with a change slug other than create, that ## Problem cites export-command/20261001-0900-create, and that nothing is committed.
+schema_version: "1.1"
+name: existing-feature
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The operator (Sam Ortiz) answers the analyst's questions in the request
+  and says to write it. The run writes exactly one intent.md
+  under the existing feature, .specs/export-command/<YYYYMMDD-HHMM>-<change>/,
+  with a change slug other than create, and its ## Problem cites the earlier
+  change export-command/20261001-0900-create. No spec or plan is written and
+  no git command is run.

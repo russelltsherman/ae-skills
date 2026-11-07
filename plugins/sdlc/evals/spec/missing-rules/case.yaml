@@ -1,0 +1,10 @@
+# Goal: Checks that in a project with no .specs/_rules/ the run writes, edits and runs nothing, writes no spec.md, and tells the operator to run /sdlc:init.
+schema_version: "1.1"
+name: missing-rules
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The project has a change directory with an approved intent but no
+  .specs/_rules/. The run stops before anything else: no file is written or
+  edited, and its final message says the project's planning rules are
+  missing and tells the operator to run /sdlc:init.

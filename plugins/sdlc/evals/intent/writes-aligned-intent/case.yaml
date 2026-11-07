@@ -1,0 +1,14 @@
+# Goal: Checks that a request that answers every analyst question and says to write is written without asking again as exactly one .specs/<feature>/<YYYYMMDD-HHMM>-<change>/intent.md with agent claude, operator Dana Reyes, origin person, valid type, risk and spec, the template's headings in order and ticket #12 cited in Problem, keeps the operator's terms with no design, gives the path and asks for review, and commits nothing.
+schema_version: "1.1"
+name: writes-aligned-intent
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The operator (Dana Reyes) answers scope, users, constraints and success in
+  the request and says to write it. The run reads the rules and the project and writes, without asking for
+  permission, exactly one .specs/<feature>/<YYYYMMDD-HHMM>-<change>/intent.md,
+  with agent: claude, operator: Dana Reyes, origin: person, valid type, risk
+  and spec values, the template's six sections in order, issue #12 cited in
+  ## Problem, and the operator's constraints in their own terms with no
+  design. The final message gives the path and asks the operator to review
+  and correct it. No spec or plan is written and no git command is run.

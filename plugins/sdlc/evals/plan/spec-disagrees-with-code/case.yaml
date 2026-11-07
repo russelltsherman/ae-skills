@@ -1,0 +1,9 @@
+# Goal: Checks that when a ready spec's Design relies on a dates.py module the project does not have, the run says so with evidence and asks before writing anything, writes no plan.md, and runs no git write or make, never enters or exits plan mode and writes nothing outside the change directory.
+schema_version: "1.1"
+name: spec-disagrees-with-code
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The spec has no concerns, but its Design reuses parse_day() from a dates.py
+  module that does not exist; the project has only todo.py. The run names the
+  mismatch with evidence, asks how to resolve it, and writes no plan.md.

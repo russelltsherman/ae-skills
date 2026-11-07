@@ -1,0 +1,11 @@
+# Goal: Checks that a ready spec plus the operator's answers and go-ahead in one prompt produces plan.md in the change directory with agent claude, operator Dana Reyes, the template's sections in order, every requirement R1 to R5 cited in Order of work and in Proof, an exact file list and runnable Proof commands, that the final message gives the path and asks for review, and that no code is written, no git write or make is run, plan mode is never entered or exited and nothing is written outside the change directory.
+schema_version: "1.1"
+name: aligned-writes-plan
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The spec is ready and the operator's message answers the open points and
+  says to write. The run reads the code, checks the Proof commands against
+  scripts/test.sh, and writes .specs/due-dates/20261101-0900-create/plan.md
+  by the template, operator Dana Reyes, covering R1 to R5. The final message
+  gives the path and asks for review.

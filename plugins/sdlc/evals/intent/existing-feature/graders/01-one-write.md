@@ -1,0 +1,8 @@
+---
+type: tool_used
+tool: Write
+min: 1
+max: 1
+arm: both
+weight: 1
+---

@@ -1,0 +1,10 @@
+# Goal: Checks that a vague request gets the analyst's questions on scope, users, constraints and success, asked in the message, and that nothing is written, committed or run through git.
+schema_version: "1.1"
+name: vague-request
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The run reads the rules and the project, then asks the operator what
+  "better" means instead of writing anything. Its final message asks
+  questions covering scope, who is affected, constraints and what success
+  looks like. No file is written and no git command is run.

@@ -1,0 +1,10 @@
+# Goal: Checks that, given a change directory that already has a spec.md, the run leaves that spec.md unchanged, writes, edits and runs nothing, and says that reworking a spec is not supported yet.
+schema_version: "1.1"
+name: spec-exists
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The argument names .specs/todo-clear/20261101-0900-create/, which already
+  has an intent.md and a spec.md. The run stops at the existing spec: it
+  writes and edits nothing, and its final message says that reworking an
+  existing spec is not supported yet.

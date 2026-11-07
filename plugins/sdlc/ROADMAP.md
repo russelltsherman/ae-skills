@@ -18,8 +18,8 @@ Decided early because later components depend on them. Each one is settled in th
 | D6 | check-target: the one command that verifies the harness | 0 | **Settled**: `make check` runs `claude plugin validate --strict .` (warnings fail), `claude plugin validate --profile directory .` (listing problems such as a short README fail; listing warnings such as a missing icon do not, until Phase 7), `shellcheck` on every shell script, and a lint of every `intent.md`, `spec.md` and `plan.md` in `.specs/` against its template's front-matter keys and required headings. Hook tests join it when they exist (operator decision, 2026-11-05). It never runs evals and makes no model calls; evals run under the eval-target (D11, INTENT constraint 12) |
 | D7 | Script language for hooks and tools | 0 | **Settled**: Bash + `jq`; Python stdlib only where Bash gets unreadable |
 | D8 | Git workflow for a solo developer (branches, PRs, what merge means) | 1 | Branch per change, PR when review exists (see Q2). Interim, until this is settled: agents do not commit; the operator reviews and decides when to commit (operator decision, 2026-11-05) |
-| D9 | How `plan` relates to built-in plan mode | 1 | `plan` runs inside plan mode and writes `plan.md` on approval |
-| D10 | How project policy skills are found and applied by `spec` and `review` | 1 | Convention-based discovery in the project's `.claude/skills/`, listed in the spec's `skills:` front-matter key |
+| D9 | How `plan` relates to built-in plan mode | 1 | **Settled**: `plan` runs outside plan mode and uses neither its plan file nor `ExitPlanMode`, so accepting a plan never starts implementation (operator decision, 2026-11-06) |
+| D10 | How project policy skills are found and applied by `spec` and `review` | 1 | **Settled**: any skill in the session whose name starts with `policy-`, from the project, the user or a plugin (namespaced, e.g. `workflow:policy-skill-authoring`); `spec` applies those whose description covers the change and lists them in the spec's `skills:` front-matter key (operator decision, 2026-11-06) |
 | D11 | eval-target: where eval cases live, how they run, and their budget | 0 | `evals/<skill>/<case>/` at the plugin root, run with `claude plugin eval --eval-dir evals/<skill> .` by a separate `make evals` target, for every skill or one with `SKILL=<skill>`; `make check` never runs it. If `claude plugin eval` does not fit, the playbook's JSON format, run in a worktree at `from` with `claude -p --plugin-dir` and an isolated config dir |
 | D12 | Hook catalog: which hooks block, which advise, and how they stay inert in projects that have not opted in | 2 | Plugin `hooks/hooks.json`; every hook exits early without the D4 marker; blocking only where a rule must hold |
 | D13 | Permissions and autonomy defaults (allowlist, auto mode for routine work) | 2 | Allowlist the inner loop (`make *`, `git *`), written into project settings by `init`; auto mode after hooks exist |
@@ -70,16 +70,16 @@ F1, F2 and F3 are one feature, `.specs/plugin-foundation/`.
 
 ### Stage 1: Plan
 
-- [ ] **`intent`**: brainstorm with the originator, ask the analyst questions (scope, users, constraints, success), create a change directory per `.specs/_rules/naming.md`, write `intent.md` from `intent_template.md`, and stop for correction before commit.
+- [x] **`intent`**: brainstorm with the originator, ask the analyst questions (scope, users, constraints, success), create a change directory per `.specs/_rules/naming.md`, write `intent.md` from `intent_template.md`, and stop for correction before commit; command-only, run as `/sdlc:intent`.
 
 ### Stage 2: Design
 
-- [ ] **`spec`**: read an approved `intent.md`, apply project policy skills (D10), write `spec.md` from `spec_template.md` with numbered requirements, a constraint-to-requirement table, carried-forward open questions and flagged concerns, including conflicts between skills.
+- [x] **`spec`**: from an approved `intent.md`, challenge the intent with the operator and edit `intent.md` with their answers, apply the session's policy skills (D10), and create `spec.md` from `spec_template.md` with numbered requirements, a constraint-to-requirement table, carried-forward open questions and flagged concerns, including conflicts between skills; only creates a spec, never reworks one; command-only, run as `/sdlc:spec`.
 - [ ] **Example policy skills** (security, UX, brand) that show `spec` and `review` how policy is applied. Shipped as examples that `init` copies in, owned by the project.
 
 ### Stage 3: Build
 
-- [ ] **`plan`**: from an approved `spec.md`, produce `plan.md` from `plan_template.md` naming files, order of work, risks and proof, citing R-numbers (D9).
+- [x] **`plan`**: creates or reworks `plan.md` from the project's `plan_template.md`, from an approved `spec.md` or an intent with `spec: skipped`, naming files, order of work, risks and proof and citing R-numbers; runs outside built-in plan mode (D9); command-only, run as `/sdlc:plan`.
 - [ ] **`build`**: implement an approved plan with the feedback loop, keeping `plan.md` in sync when the work departs from it.
 - [ ] **Subagents**: `verifier` (runs the app and checks behavior against `plan.md`, reports only), `researcher` (explores the codebase without flooding the main context), `simplifier` (strips needless complexity after implementation).
 - [ ] **Parallel work guidance**: worktree conventions for running independent plan steps in separate sessions.
@@ -120,7 +120,7 @@ Each phase lists what is built and how the harness is used to build it. A phase 
 **Phase 0: Foundation, check-target and eval-target (by hand).** Decisions D1–D7, D11, D21, D22, then in order: the foundation (F1–F3), minimal `init` (F4), the check-target (F5), and the eval-target (F6). The eval-target comes before Phase 1 because every skill is built under `policy-skill-authoring` (D5), whose eval loop runs on it. Nothing exists to dogfood yet, so this is the only hand-made phase. Keep it as small as possible. It ends with the first plugin release, installed into this repo, which Phase 1 is built with.
 
 **Phase 1: Front of the chain.** `intent`, then `spec`, then `plan` (D8–D10).
-Dogfood: once `intent` is released, every later component starts as an `intent.md` written with it. `plan` is specified from a spec written by `spec`. The intents for `intent`, `spec` and `plan` were written by hand in Phase 0, before `intent` existed.
+Dogfood: once `intent` is released, every later component starts as an `intent.md` written with it. `plan`'s spec was written by hand, so `plan` could be built alongside `spec`. The intents for `intent`, `spec` and `plan` were written by hand in Phase 0, before `intent` existed.
 
 **Phase 2: Build and test loop.** Feedback-loop conventions, the first hooks, `verifier` subagent, evals for the Phase 1 skills, `build`, `learn` (D12, D13).
 Dogfood: from here, changes to any harness skill must keep its evals green; hooks guard the harness's own tests.

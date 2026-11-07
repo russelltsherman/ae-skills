@@ -1,0 +1,9 @@
+# Goal: Checks that a spec with an open concern gets no plan.md, that the run names the concern and asks the operator to decide it without recording a decision of its own in spec.md, and that it runs no git write or make, never enters or exits plan mode and writes nothing outside the change directory.
+schema_version: "1.1"
+name: spec-has-concern
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  The spec in .specs/due-dates/20261101-0900-create/ still lists concern K1. The run
+  names K1, says the plan waits on it, asks the operator to decide it, and
+  writes no plan.md and no change to spec.md.
