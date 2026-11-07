@@ -1,6 +1,6 @@
 {
   "name": "sdlc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "an implementation of Anthropics AI Native Software Development Lifecycle",
   "author": {
     "name": "Russell Sherman",
