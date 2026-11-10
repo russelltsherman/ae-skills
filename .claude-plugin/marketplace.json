@@ -7,6 +7,11 @@
   },
   "plugins": [
     {
+      "name": "blueprint",
+      "source": "./plugins/blueprint",
+      "description": "Guided high-level and low-level design: an expert-architect agent reviews planning documents for gaps, interviews you until aligned, then writes to project-owned templates."
+    },
+    {
       "name": "sdlc",
       "source": "./plugins/sdlc",
       "description": "an implementation of Anthropics AI Native Software Development Lifecycle"

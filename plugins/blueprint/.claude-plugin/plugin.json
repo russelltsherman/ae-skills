@@ -1,0 +1,12 @@
+{
+  "name": "blueprint",
+  "version": "0.1.0",
+  "description": "Guided high-level and low-level design for coding agents: an expert-architect agent reviews your planning documents for gaps and contradictions, interviews you until aligned, then writes to project-owned templates, with every document citing the level above.",
+  "author": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "repository": "https://github.com/russelltsherman/ae-skills",
+  "license": "MIT",
+  "keywords": ["planning", "architecture", "high-level-design", "low-level-design", "adr"]
+}
