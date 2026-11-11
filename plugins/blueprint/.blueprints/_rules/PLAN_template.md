@@ -29,17 +29,24 @@ component: M<n>
 
 ## Order of work
 
-<!-- Steps in the order they are done. Each step cites the requirements it
-     completes, and ends with the code building and those requirements'
-     proofs in PROOFS.md passing. The last step is always the one below. -->
+<!-- Steps in the order they are done. Each work step cites the
+     requirements it completes, and ends with the code building and those
+     requirements' proofs in PROOFS.md passing. The last two steps are
+     always the two below, copied as written and numbered on from the work
+     steps. Closing the plan is the final unit of work: the change is not
+     done until this plan says `status: completed`. -->
 
 1. <step>. (R<n>)
-2. Close the change: write each lasting lesson where it belongs, then set
-   this plan's `status` to `completed`. A lesson about how the component
-   behaves or is built goes into SPEC.md, as a requirement or in the
-   design; a lesson about how to verify a requirement goes into its proof
-   in PROOFS.md; a lesson that crosses the boundary rule goes to the
-   operator to take to `hld`.
+2. Write the lasting lessons. Write each thing learned during this change
+   that stays true after it where it belongs: a lesson about how the
+   component behaves or is built goes into SPEC.md, as a requirement or in
+   the design; a lesson about how to verify a requirement goes into its
+   proof in PROOFS.md; a lesson that crosses the boundary rule goes to the
+   operator to take to `hld`. If there are none, say so. Done when every
+   lesson is written or handed to the operator.
+3. Close the plan. Set this plan's front matter to `status: completed`.
+   This is the final unit of work: the change is not done until this step
+   is. Done when the front matter says `status: completed`.
 
 ## Risks
 
