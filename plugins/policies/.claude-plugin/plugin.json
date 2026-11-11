@@ -1,0 +1,12 @@
+{
+  "name": "policies",
+  "version": "0.1.0",
+  "description": "Organizational policy skills: the rules your designs and code must follow, such as testing, security or data handling, each written as a policy-* skill an agent can apply and show compliance with.",
+  "author": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "repository": "https://github.com/russelltsherman/ae-skills",
+  "license": "MIT",
+  "keywords": ["policy", "governance", "standards", "compliance"]
+}
