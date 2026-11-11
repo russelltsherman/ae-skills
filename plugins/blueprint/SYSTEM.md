@@ -23,6 +23,7 @@ The agent works as an expert architect and analyst. It reviews what is written f
 - **Projects that adopt `blueprint`:** they gain `SYSTEM.md`, `ARCHITECTURE.md`, `ROADMAP.md` and `docs/adr/` in their root, a `.blueprints/` directory, and a section in their `CLAUDE.md`.
 - **Claude Code:** hosts the plugin and loads its skills.
 - **`policy-*` skills a project provides:** applied to every component design.
+- **`pattern-*` skills, from the separate `patterns` plugin or the project:** well-known architecture patterns that inform high-level design choices.
 
 ## Constraints
 
@@ -53,5 +54,5 @@ The agent works as an expert architect and analyst. It reviews what is written f
 
 - Is `blueprint` the final name?
 - Can one project ever span several repositories?
-- How does `lld` find the project's `policy-*` skills?
+- How do `lld` and `hld` find the `policy-*` and `pattern-*` skills available to them?
 - How small can a valid HLD be, given that every component must be named in the architecture?

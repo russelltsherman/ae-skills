@@ -41,13 +41,17 @@ Technology:
 - Bash and `jq` for scripts, with the Python standard library only where Bash gets unreadable (D7).
 - `make` as the entry point for checks and evals.
 
+## Patterns
+
+None.
+
 ## Components
 
 ### M1 templates
 
 The project's planning rules: one template per document type, shipped in the plugin's own `.blueprints/_rules/` and copied into each project, which owns its copy and may adapt it.
 
-Serves: SC3. Decisions: D6, D12.
+Serves: SC3. Decisions: D6, D12, D17.
 
 Contracts:
 
@@ -67,7 +71,9 @@ Contracts:
 
 The expert architect for the HLD. It reviews the system intent, architecture, roadmap and decision records for gaps, contradictions and the usual model failure modes, interviews the operator until each issue is settled, and writes what is agreed by the templates. It stays at the level of components, contracts, data ownership, quality targets and decisions.
 
-Serves: SC4, SC5, SC6, SC8. Decisions: D5, D11, D14, D15, D16.
+It draws on the `pattern-*` skills available in the session, from the separate `patterns` plugin or the project, as a source of options and a lens in review, and records each adopted pattern in its decision record and the Patterns section of `ARCHITECTURE.md`.
+
+Serves: SC4, SC5, SC6, SC8. Decisions: D5, D11, D14, D15, D16, D17.
 
 Contracts:
 
@@ -85,9 +91,9 @@ Contracts:
 
 ### M5 lint
 
-`lint-docs.sh`. A deterministic check of every planning document in every project in the repository. It checks front matter, including a status that fits the document type, and headings. It also checks that every citation resolves within its project, or for a nested project's `implements:`, in the parent's architecture, and that it does not point to a withdrawn item or a superseded decision.
+`lint-docs.sh`. A deterministic check of every planning document in every project in the repository. It checks front matter, including a status that fits the document type, and headings. It also checks that every citation resolves within its project, or for a nested project's `implements:`, in the parent's architecture, and that it does not point to a withdrawn item or a superseded decision. It checks that the patterns in accepted decision records' `patterns:` front matter and the Patterns section of `ARCHITECTURE.md` agree.
 
-Serves: SC3, SC7, SQT1, SQT2. Decisions: D3, D7, D10, D13, D14.
+Serves: SC3, SC7, SQT1, SQT2. Decisions: D3, D7, D10, D13, D14, D17.
 
 Contracts:
 

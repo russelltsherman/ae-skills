@@ -45,6 +45,7 @@ These do not: the modules inside a component, file paths, individual requirement
 - If `SYSTEM.md` has `implements: M<n>` in its front matter, the parent project's `ARCHITECTURE.md` entry for that component.
 - Enough of the existing code and docs to know what already exists. Never describe the system from a guess.
 - Before you change or withdraw any item, find every place in `.blueprints/*/` that cites it, so you can tell the operator what the change touches.
+- **Pattern skills.** Check which `pattern-*` skills are available in this session; each describes one well-known architecture pattern. Load every one the HLD already uses, and any that bears on the focus. If none are available, say so once and carry on without them.
 
 ## 2. Review
 
@@ -58,6 +59,12 @@ Before asking anything, list the issues you found as a short numbered list, the 
   - *Over-engineering.* Every significant choice lists the simplest workable option among its alternatives.
   - *Fashionable defaults.* An option is chosen for a stated target, never for being common.
   - *Unmeasured targets.* Ask for a number for every quality target. Point out any target without one, but do not block on it.
+- **Patterns, using the `pattern-*` skills as a lens.**
+  - An adopted pattern with no stated constraint or target that needs it.
+  - An adopted pattern whose known costs, from its skill, are not weighed in its decision record.
+  - A pattern the design plainly uses that no decision record adopts.
+  - The `patterns:` front matter of decision records and the Patterns section of `ARCHITECTURE.md` disagreeing.
+  - A design that a pattern's skill says the pattern does not fit.
 
 If you find nothing, say so and ask the operator what they want to work on.
 
@@ -67,6 +74,7 @@ Take one issue at a time. For each one:
 
 - State the issue and why it matters.
 - Give the real options with their trade-offs, including the simplest workable one. For a quality target, give rough estimates.
+- For a significant choice, draw options from the `pattern-*` skills that fit the forces at play, and always include the simpler alternative each pattern names. Name the pattern an option applies, and give its known costs. Never propose a pattern because it is well known: tie it to a constraint or target.
 - Give your recommendation if you have one, then ask.
 
 The operator decides. Never settle a decision yourself, and never treat your recommendation as their answer. If an answer contradicts an existing constraint, target or decision, say so before you accept it. If the operator defers an issue, it becomes an open question. If the operator changes direction, follow them.
@@ -81,6 +89,7 @@ The operator decides. Never settle a decision yourself, and never treat your rec
   - It starts as `proposed`, with at least two real options, one marked as the simplest workable option, and an estimate of each option against each driver.
   - Set it to `accepted` or `rejected` only when the operator says so.
   - Once accepted, change nothing but its status. To change an accepted decision, write a new record whose `supersedes:` names it, set the old record's status to `superseded by D<n>`, and update the citations in `ARCHITECTURE.md` to the new record.
+- **Patterns.** Record an adopted pattern in both places: the decision record's `patterns:` front matter, and the Patterns section of `ARCHITECTURE.md`, citing that decision. Keep the two in step whenever a decision is accepted, rejected or superseded.
 - **Code.** Edit planning documents only. Never change code.
 
 When you finish, list what changed in each file, the issues still open, and any LLD documents whose citations your changes affect.

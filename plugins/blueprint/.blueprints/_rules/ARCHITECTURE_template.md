@@ -18,6 +18,16 @@ Technology:
 
 - <technology> (D<n>)
 
+## Patterns
+
+<!-- The well-known architecture patterns the system uses, each naming its
+     `pattern-*` skill, where it is used, and the decision that adopted it.
+     Every pattern here is listed in that decision record's `patterns:`
+     front matter, and every pattern a decision record lists appears here.
+     Write "None." when the system uses none. -->
+
+- pattern-<name>: <where it is used>. (D<n>)
+
 ## Components
 
 <!-- One heading per component. Keep each one high level: what it is

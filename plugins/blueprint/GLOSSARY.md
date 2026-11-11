@@ -70,6 +70,7 @@ These terms follow the operator's answers from 2026-11-09 and 2026-11-10: planni
 | Rules | `.blueprints/_rules/` in the project root. The project's own copy of the templates and naming rules. `init` copies them in, and every skill reads them from there, never from the plugin. |
 | Template | The skeleton of headings and front matter that a skill fills in for one document type. One file per type, `.blueprints/_rules/<document>_template.md`, where `<document>` is the name of the file it produces: `SYSTEM_template.md`, `ARCHITECTURE_template.md`, `ROADMAP_template.md`, `INTENT_template.md`, `SPEC_template.md`, `PLAN_template.md`, `PROOFS_template.md`, and `NNNN-ADR_template.md` for decision records, which are written to `docs/adr/NNNN-<slug>.md`. A template is not a steering document. |
 | Policy skill | A skill named `policy-*` that `lld` applies to every design, such as a testing or security policy †. |
+| Pattern skill | A skill named `pattern-*` describing one well-known architecture pattern: what it is, the forces it answers, when it fits, its costs and the simpler alternative. Shipped by the separate `patterns` plugin, and a project may add its own. `hld` draws options from them and reviews designs against them. An adopted pattern is named in its decision record's `patterns:` front matter and in the Patterns section of `ARCHITECTURE.md` (D17) †. |
 
 **Tooling**
 
