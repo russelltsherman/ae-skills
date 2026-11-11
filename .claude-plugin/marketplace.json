@@ -12,6 +12,11 @@
       "description": "Guided high-level and low-level design: an expert-architect agent reviews planning documents for gaps, interviews you until aligned, then writes to project-owned templates."
     },
     {
+      "name": "patterns",
+      "source": "./plugins/patterns",
+      "description": "Reference skills for well-known software architecture patterns: when each fits, its costs, the simpler alternative, and what it means for components, contracts and data ownership."
+    },
+    {
       "name": "sdlc",
       "source": "./plugins/sdlc",
       "description": "an implementation of Anthropics AI Native Software Development Lifecycle"

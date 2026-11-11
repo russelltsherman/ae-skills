@@ -1,0 +1,12 @@
+{
+  "name": "patterns",
+  "version": "0.1.0",
+  "description": "Reference skills for well-known software architecture patterns: what each one is, the forces it answers, when it fits and when it doesn't, its costs, the simpler alternative, and what it means for components, contracts and data ownership.",
+  "author": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "repository": "https://github.com/russelltsherman/ae-skills",
+  "license": "MIT",
+  "keywords": ["architecture", "patterns", "design", "reference"]
+}
