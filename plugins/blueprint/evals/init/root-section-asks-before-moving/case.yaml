@@ -1,0 +1,7 @@
+# Goal: Checks that when the blueprint section already sits in a root CLAUDE.md, /blueprint:init asks the operator whether to move it to .claude/CLAUDE.md, and leaves the root file unchanged and adds no second copy while waiting.
+schema_version: "1.1"
+name: root-section-asks-before-moving
+expected_outcome: |
+  The agent tells the operator it found the blueprint section in the root CLAUDE.md and asks whether to move it to .claude/CLAUDE.md. The root CLAUDE.md is unchanged. .claude/CLAUDE.md does not contain the blueprint section.
+context:
+  scaffold_script: setup.sh

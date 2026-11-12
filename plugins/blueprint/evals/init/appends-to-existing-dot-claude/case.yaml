@@ -1,0 +1,7 @@
+# Goal: Checks that when .claude/CLAUDE.md already holds the project's own instructions, /blueprint:init appends the blueprint section after them exactly once, keeps the existing text unchanged, and creates no CLAUDE.md in the project root.
+schema_version: "1.1"
+name: appends-to-existing-dot-claude
+expected_outcome: |
+  .claude/CLAUDE.md still begins with its original text, unchanged, followed by one copy of the blueprint section between its markers. No CLAUDE.md exists in the project root.
+context:
+  scaffold_script: setup.sh

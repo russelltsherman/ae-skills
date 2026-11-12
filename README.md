@@ -35,3 +35,8 @@ To remove the plugin or the marketplace:
 ```
 
 The marketplace manifest lives in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json); the plugin manifest in [`plugins/workflow/.claude-plugin/plugin.json`](plugins/workflow/.claude-plugin/plugin.json).
+
+## Development
+
+- Each plugin under `plugins/<name>/` is independent and has its own `.claude-plugin/plugin.json`. Don't copy patterns from a sibling plugin unless that's the intent.
+- Create or change skills with the `skill-creator` skill and its eval loop, and give every test case a stated goal. The `workflow:policy-skill-authoring` skill holds the full policy.

@@ -1,0 +1,7 @@
+# Goal: Checks that in a fresh git repository /blueprint:init writes the blueprint section to .claude/CLAUDE.md, creates no CLAUDE.md in the project root, and still copies the templates into .blueprints/_rules/.
+schema_version: "1.1"
+name: fresh-project-writes-dot-claude
+expected_outcome: |
+  .claude/CLAUDE.md exists and holds the blueprint section between its <!-- blueprint:start --> and <!-- blueprint:end --> markers. No CLAUDE.md exists in the project root. .blueprints/_rules/ holds the plugin's templates.
+context:
+  scaffold_script: setup.sh

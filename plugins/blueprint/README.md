@@ -19,7 +19,7 @@ For pattern-aware architecture work, also install the [`patterns`](../patterns/)
 
 From the root of your project:
 
-1. `/blueprint:init` sets the project up: copies the templates into `.blueprints/_rules/` and adds a short section to `CLAUDE.md`.
+1. `/blueprint:init` sets the project up: copies the templates into `.blueprints/_rules/` and adds a short section to `.claude/CLAUDE.md`.
 2. `/blueprint:hld` works on the high-level design. Give it a focus, or nothing to review everything:
    ```
    /blueprint:hld how should the notifier talk to the order service?
@@ -35,7 +35,7 @@ There is no required order. Start any document, work on several side by side, le
 
 | Skill | What it does |
 | --- | --- |
-| `init` | Scaffolds a project. Safe to re-run: never overwrites a template or `CLAUDE.md` section you changed without asking. Recognizes a project nested inside another. |
+| `init` | Scaffolds a project. Safe to re-run: never overwrites a template or `.claude/CLAUDE.md` section you changed without asking. Recognizes a project nested inside another. |
 | `hld` | Expert architect for the whole system: constraints, quality targets, components, contracts, data ownership, decisions and the roadmap. Stays high level. |
 | `lld` | Expert architect and analyst for one component, grounded in the code as it is: intent, requirements, internal design, proofs, and the plan for one change. Goes deep. |
 

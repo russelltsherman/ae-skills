@@ -1,6 +1,6 @@
 ---
 name: init
-description: Scaffold a blueprint project in the current directory. Copies the plugin's templates into .blueprints/_rules/, where the project owns and can adapt them, and adds a short blueprint section to the project's CLAUDE.md. Safe to re-run; never overwrites a file the project has changed without asking.
+description: Scaffold a blueprint project in the current directory. Copies the plugin's templates into .blueprints/_rules/, where the project owns and can adapt them, and adds a short blueprint section to the project's .claude/CLAUDE.md. Safe to re-run; never overwrites a file the project has changed without asking.
 disable-model-invocation: true
 ---
 
@@ -30,13 +30,15 @@ Never delete a file from `.blueprints/_rules/`, even one the plugin no longer sh
 
 ## 3. Add the CLAUDE.md section
 
-Add the section below to `CLAUDE.md` in the project root, creating the file if it does not exist. The section sits between its two marker comments, so a re-run can find it.
+Add the section below to `.claude/CLAUDE.md` in the project root, creating the `.claude/` directory and the file if they do not exist. Never create or write a `CLAUDE.md` in the project root itself: the project keeps its Claude configuration together under `.claude/`, and Claude Code reads `.claude/CLAUDE.md` as project memory just as it reads a root one. The section sits between its two marker comments, so a re-run can find it.
 
-- **No section yet:** append it to the end of the file.
+- **No section yet:** append it to the end of `.claude/CLAUDE.md`.
 - **Identical section already there:** leave it alone.
 - **Different section already there:** show the operator the differences and ask before replacing the text between the markers.
 
 Leave everything outside the markers untouched.
+
+**Section in a root `CLAUDE.md`.** A project set up by an older version of `init` may have the section between its markers in `CLAUDE.md` in the project root. If so, do not change the root file on your own, and do not add a second copy to `.claude/CLAUDE.md` while the first still exists: Claude would then load the same instructions twice. Tell the operator where you found it and ask whether to move it, which means removing the marked section from the root file (leaving the rest of that file untouched) and adding it to `.claude/CLAUDE.md` as above. Do nothing to either file until they answer.
 
 ```markdown
 <!-- blueprint:start -->
