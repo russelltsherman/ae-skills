@@ -27,6 +27,11 @@
       "description": "Organizational policy skills: the testing, security and other rules designs and code must follow, each written so an agent can apply it and show compliance."
     },
     {
+      "name": "rnd",
+      "source": "./plugins/rnd",
+      "description": "Research and development toolkit — skills for ADRs, PRDs, and architecture design, plus resilient deep-research "
+    },
+    {
       "name": "sdlc",
       "source": "./plugins/sdlc",
       "description": "an implementation of Anthropics AI Native Software Development Lifecycle"
