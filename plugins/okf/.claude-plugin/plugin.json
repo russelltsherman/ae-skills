@@ -1,0 +1,10 @@
+{
+  "name": "okf",
+  "version": "0.1.0",
+  "description": "Personal knowledge-base maintainer — an Open Knowledge Format (OKF v0.1) vault skill that ingests sources, answers what your notes know, and lints for staleness, contradictions, orphans, and broken links. Bundles the OKF schema contract and a PyYAML-based bundle validator.",
+  "author": {
+    "name": "Russell Sherman",
+    "url": "https://github.com/russelltsherman/ae-skills"
+  },
+  "keywords": ["okf", "knowledge-base", "second-brain", "notes", "obsidian", "vault", "skills"]
+}
