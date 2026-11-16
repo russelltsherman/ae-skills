@@ -1,4 +1,4 @@
-# Goal: Checks that ingesting a structured research report stores a byte-identical raw copy in the vault, points the source page's resource at it, carries the report's open questions and confidence levels onto the wiki pages, adds no data-ownership design the report leaves open, updates the existing Shopify entity page with the report's critique, names the source and concept pages research-pattern-modular-monolith and pattern-modular-monolith, and leaves the vault passing the validator with no naming warnings.
+# Goal: Checks that ingesting a structured research report stores a byte-identical raw copy in the vault, points the source page's resource at it, carries the report's open questions and confidence levels onto the wiki pages, adds no data-ownership design the report leaves open, updates the existing Shopify entity page with the report's critique, names the source and concept pages research-pattern-modular-monolith and pattern-modular-monolith, keeps every wikilink on one line, sets every timestamp and log date it writes from the real clock time of the run, and leaves the vault passing the validator with no naming warnings.
 schema_version: "1.1"
 name: ingest-research-report
 context:
@@ -13,5 +13,6 @@ expected_outcome: |
   org-shopify entity page now records the Packwerk retrospective or the Rails World
   2024 critique and links the new source page. The source page is
   sources/research-pattern-modular-monolith.md and the concept page
-  concepts/pattern-modular-monolith.md. The validator reports 0 errors and no
+  concepts/pattern-modular-monolith.md. No wikilink spans a line break. The validator reports 0 errors and no
   naming warnings.
+  Every timestamp and log date the run writes comes from `date -u` during the run; untouched pages keep theirs.

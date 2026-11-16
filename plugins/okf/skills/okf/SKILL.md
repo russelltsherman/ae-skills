@@ -47,6 +47,26 @@ link targets, and its rules keep them unique, predictable and stable. The vault'
 
 Pick the operation that matches the user's intent: Ingest, Query, or Lint.
 
+## Timestamps come from the clock
+Every operation that writes pages (Ingest, a saved Query answer, Lint fixes) starts by reading
+the current UTC time from the shell, once, before the first write:
+
+```
+date -u +%Y-%m-%dT%H:%M:%SZ
+```
+
+Use that exact value for every `timestamp:` you write or refresh in the operation, and its date
+part for the `log.md` `## YYYY-MM-DD` heading. Never invent, estimate, round or increment a
+time: no `T00:00:00Z` for "today", no adding a minute per page, no time carried over from an
+earlier operation. If the operation runs long or spans several sources, read the clock again
+rather than guessing how much time has passed.
+
+Why it matters: `timestamp` is the only record of when a page last changed, and Lint uses it
+to find stale pages. A guessed time that lands in the future makes a page look fresher than it
+is, and the next real update then appears to move the page backwards in time; a made-up
+midnight makes every page look older than it is. The validator warns on any timestamp later
+than the current time.
+
 ## Ingest
 Trigger: the user gives you a source (URL, file path, pasted text, or "save these takeaways").
 
@@ -55,6 +75,8 @@ on its own — a usable source must never carry a broken one through, and one fa
 abort the usable ones. Report a per-source PASS/FAIL summary at the end.
 
 Steps (per source):
+Before step 1, read the clock (see "Timestamps come from the clock").
+
 1. Read the source. For a URL use WebFetch (the raw copy is downloaded separately in step 4); for a PDF/file use Read; for pasted text use it
    directly; for chat takeaways use the conversation.
 2. COMPLETENESS GATE — mandatory, before ANY write. State an explicit verdict for this source:
@@ -86,9 +108,14 @@ Steps (per source):
    source over faithfully" below.
 7. Create or update related `concepts/` and `entities/` pages, following the same faithfulness
    rules. Add `[[wikilinks]]` in BOTH directions between related pages. Reuse existing pages; do
-   not duplicate.
-8. Set/refresh `timestamp` on every page you touch (ISO 8601).
-9. Append an entry to the vault's `log.md` under today's `## YYYY-MM-DD` heading using
+   not duplicate. On every page you write (source pages and `log.md` too), keep each wikilink,
+   `|label` included, on one line: Obsidian doesn't render a link with a line break in it, so
+   when you wrap prose, wrap before or after the link and let the line run long rather than
+   split it.
+8. Set/refresh `timestamp` on every page you touch to the time you read from the clock
+   (ISO 8601 UTC, e.g. `2026-11-16T14:03:27Z`). Leave pages you did not change alone.
+9. Append an entry to the vault's `log.md` under the `## YYYY-MM-DD` heading for that clock
+   reading's date (add the heading if it isn't there), using
    `**Creation**`/`**Update**` prefixes and wikilinks to changed pages.
 10. Run the validator (see Validator below). Fix any errors; resolve warnings where reasonable.
     Report what you changed.
@@ -227,4 +254,6 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/okf-validate/okf_validate.py" "<vault_pat
 - Never create a page to represent a source you could not actually read or that failed the
   completeness gate. Real content earns a page; a broken or empty source earns a `**Failure**`
   log line and a report — not a stub. When in doubt, fail loudly rather than fabricate quietly.
+- Take every `timestamp:` and log date from `date -u` at the start of the operation; never
+  invent or estimate one.
 - End every write operation by running the validator and reporting the result.

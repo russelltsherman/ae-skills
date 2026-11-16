@@ -50,13 +50,20 @@ Strongly recommended (include whenever known):
   (`origin` is a vault extension; OKF allows unknown extra keys.)
   tags: [list, of, lowercase, tags]   # first tag = the filename prefix (`pattern`, `person`…)
   aliases: [Acronym, Expanded Name, synonym]   # concepts and entities; Obsidian-native
-  timestamp: <ISO 8601 datetime of last change, e.g. 2026-06-26T00:00:00Z>
+  timestamp: <ISO 8601 UTC datetime of last change, e.g. 2026-06-26T14:03:27Z>
+  (Take it from the clock, `date -u +%Y-%m-%dT%H:%M:%SZ`, when the change is made; never a
+  guessed, rounded or incremented time. Lint judges staleness by it, so a made-up value
+  misleads every later check.)
 Unknown extra keys are allowed and must be tolerated by consumers.
 
 ## Links
 - Use Obsidian wikilinks in bodies: [[file-stem]] or [[file-stem|alias]]. The stem is the
   target filename without `.md` (e.g. [[topic-open-knowledge-format]]). In running prose,
   prefer the alias form for readability: [[pattern-cqrs|CQRS]].
+- Keep every wikilink, `|label` included, on one line. Obsidian does not render a link that
+  contains a line break; it shows the raw brackets, and a break inside the stem can also hide a
+  broken link. When you hard-wrap prose, break the line before or after the link, never inside
+  it, and let the line run long if that is what it takes.
 - Links assert untyped relationships. Broken links are tolerated (may be planned pages).
 - Citations to external sources go under a `# Citations` heading, numbered: `[1] [Title](url)`.
 
@@ -98,3 +105,8 @@ any), `# Citations`.
    one of that folder's prefixes from `NAMING.md` (warning if not).
 8. A page in `concepts/` or `entities/` has its prefix (without the hyphen) as its first tag
    (warning if not).
+9. No wikilink spans a line break (warning "wikilink split across lines", with file and line).
+   Such a link does not count as a link for invariant 3; Obsidian would not render it.
+10. A `timestamp` is not later than the current time (warning "timestamp … is in the future",
+    with file and value). Up to 5 minutes ahead is tolerated for clock skew. A value without a
+    UTC offset is read as UTC; a date-only value warns only if its date is after today (UTC).

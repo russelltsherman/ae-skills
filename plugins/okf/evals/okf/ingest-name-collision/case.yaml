@@ -1,4 +1,4 @@
-# Goal: Checks that ingesting an article about vertical slicing as a delivery practice, into a vault that already has pattern-vertical-slice for the code-organisation pattern, creates a separate method- concept page instead of merging into or renaming the pattern page, gives each page aliases with only its own phrasing (removing the bare shared term from the pattern page), cross-links the two pages with a line telling them apart without inventing a relationship, names the source page article-<author-or-site>-<title>, gives any new entity page a type prefix and matching first tag, keeps the article's self-reported estimate hedged, and leaves the vault passing the validator with no naming warnings.
+# Goal: Checks that ingesting an article about vertical slicing as a delivery practice, into a vault that already has pattern-vertical-slice for the code-organisation pattern, creates a separate method- concept page instead of merging into or renaming the pattern page, gives each page aliases with only its own phrasing (removing the bare shared term from the pattern page), cross-links the two pages with a line telling them apart without inventing a relationship, names the source page article-<author-or-site>-<title>, gives any new entity page a type prefix and matching first tag, keeps the article's self-reported estimate hedged, keeps every wikilink on one line, sets every timestamp and log date it writes from the real clock time of the run, and leaves the vault passing the validator with no naming warnings.
 schema_version: "1.1"
 name: ingest-name-collision
 context:
@@ -14,4 +14,5 @@ expected_outcome: |
   source page is sources/article-<okafor-or-deliverynotes>-<short-title>.md. A
   page for the author, if any, is entities/person-dana-okafor.md with first tag
   person. The "three weeks to under one" figure stays marked as the author's
-  unmeasured estimate. The validator reports 0 errors and no naming warnings.
+  unmeasured estimate. No wikilink spans a line break. The validator reports 0 errors and no naming warnings.
+  Every timestamp and log date the run writes comes from `date -u` during the run; untouched pages keep theirs.

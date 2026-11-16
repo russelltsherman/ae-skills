@@ -7,7 +7,7 @@ Exit code 0 = no errors (warnings allowed). 1 = at least one error. 2 = usage/de
 import os
 import re
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 
 try:
     import yaml
@@ -19,6 +19,9 @@ RESERVED = {"index.md", "log.md"}
 KNOWN_TYPES = {"Article", "Paper", "Concept", "Entity", "Note", "Decision", "Goal"}
 RECOMMENDED = ("title", "description", "timestamp")
 RAW_DIR = "raw"
+# How far past the current time a page timestamp may be before it is reported: room for clock
+# skew between the machine that wrote the page and the one validating it, nothing more.
+FUTURE_TOLERANCE = timedelta(minutes=5)
 # Filename prefixes allowed for a page directly inside each folder (see reference/NAMING.md).
 PREFIXES = {
     "concepts": ("pattern", "method", "artifact", "topic"),
@@ -30,14 +33,33 @@ PREFIXES = {
 TAGGED_BY_PREFIX = ("concepts", "entities")
 
 FM_RE = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?", re.DOTALL)
-WIKILINK_RE = re.compile(r"\[\[([^\]\|#]+)(?:[#\|][^\]]*)?\]\]")
+# A wikilink lives on one line: Obsidian does not render [[...]] that contains a newline, so
+# neither pattern may match across one. SPLIT_WIKILINK_RE finds the links that do span lines.
+WIKILINK_RE = re.compile(r"\[\[([^\]\|#\n]+)(?:[#\|][^\]\n]*)?\]\]")
+SPLIT_WIKILINK_RE = re.compile(r"\[\[[^\[\]\n]*\n[^\[\]]*\]\]")
 CODE_FENCE_RE = re.compile(r"```.*?```", re.DOTALL)
 INLINE_CODE_RE = re.compile(r"`[^`]*`")
 
 
+def _blank(m):
+    """Blank out a code match but keep its newlines, so offsets and line numbers still hold."""
+    return re.sub(r"[^\n]", " ", m.group(0))
+
+
 def strip_code(text):
-    """Remove fenced and inline code so prose like `[[x]]` is not read as a link."""
-    return INLINE_CODE_RE.sub("", CODE_FENCE_RE.sub("", text))
+    """Blank fenced and inline code so prose like `[[x]]` is not read as a link."""
+    return INLINE_CODE_RE.sub(_blank, CODE_FENCE_RE.sub(_blank, text))
+
+
+def check_split_wikilinks(rel, text):
+    """Warnings for each [[...]] that spans a line break, with the line where it starts."""
+    out = []
+    for m in SPLIT_WIKILINK_RE.finditer(text):
+        line = text.count("\n", 0, m.start()) + 1
+        shown = re.sub(r"\s*\n\s*", " ", m.group(0))
+        out.append("%s:%d: wikilink split across lines: %s (Obsidian does not render it; "
+                   "keep the whole link on one line)" % (rel, line, shown))
+    return out
 
 
 def parse_frontmatter(text):
@@ -72,6 +94,49 @@ def is_iso8601(value):
         except ValueError:
             continue
     return False
+
+
+def parse_timestamp(value):
+    """Return the timestamp as an aware UTC datetime, a date (date-only value), or None.
+
+    PyYAML turns unquoted ISO timestamps into datetime/date objects: tz-bearing ones come back
+    aware, ones without an offset come back naive. A naive value is taken to be UTC, which is
+    what the vault writes (`...Z`). Quoted values arrive as strings and are parsed the same way.
+    """
+    if isinstance(value, str):
+        s = value.strip().replace("Z", "+00:00").replace("z", "+00:00")
+        # Date first: datetime.fromisoformat would read a bare date as midnight.
+        try:
+            value = date.fromisoformat(s)
+        except ValueError:
+            try:
+                value = datetime.fromisoformat(s)
+            except ValueError:
+                return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+    if isinstance(value, date):
+        return value
+    return None
+
+
+def check_future_timestamp(rel, value, now):
+    """Warning if a page's timestamp is later than `now` (aware UTC) plus the skew tolerance."""
+    ts = parse_timestamp(value)
+    if isinstance(ts, datetime):
+        future = ts > now + FUTURE_TOLERANCE
+    elif isinstance(ts, date):
+        future = ts > now.date()
+    else:
+        return []
+    if not future:
+        return []
+    return ["%s: timestamp %s is in the future (now %s); set it from the clock "
+            "(date -u +%%Y-%%m-%%dT%%H:%%M:%%SZ), not a guess"
+            % (rel, value.isoformat() if hasattr(value, "isoformat") else value,
+               now.strftime("%Y-%m-%dT%H:%M:%SZ"))]
 
 
 def collect_md_files(root):
@@ -127,8 +192,16 @@ def check_naming(rel, data):
     return []
 
 
-def validate_bundle(root):
-    """Return (errors, warnings) as lists of strings."""
+def validate_bundle(root, now=None):
+    """Return (errors, warnings) as lists of strings.
+
+    `now` is the reference time for the future-timestamp check (defaults to the current UTC
+    time); a naive value is taken to be UTC.
+    """
+    if now is None:
+        now = datetime.now(timezone.utc)
+    elif now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
     errors, warnings = [], []
     files = collect_md_files(root)
     stems = {stem_of(p) for p in files}
@@ -166,6 +239,8 @@ def validate_bundle(root):
                 warnings.append("%s: missing recommended field '%s'" % (rel, field))
         if "timestamp" in data and not is_iso8601(data["timestamp"]):
             warnings.append("%s: 'timestamp' is not valid ISO 8601" % rel)
+        elif "timestamp" in data:
+            warnings.extend(check_future_timestamp(rel, data["timestamp"], now))
 
         warnings.extend(check_naming(rel, data))
 
@@ -174,7 +249,9 @@ def validate_bundle(root):
             if not os.path.isfile(os.path.join(root, resource)):
                 warnings.append("%s: resource '%s' has no matching raw copy" % (rel, resource))
 
-        for stem in WIKILINK_RE.findall(strip_code(text)):
+        body = strip_code(text)
+        warnings.extend(check_split_wikilinks(rel, body))
+        for stem in WIKILINK_RE.findall(body):
             if stem.strip() not in stems:
                 warnings.append("%s: wikilink [[%s]] has no matching file" % (rel, stem.strip()))
 

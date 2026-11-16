@@ -76,8 +76,11 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/okf-validate/okf_validate.py" vault
 ```
 
 It enforces: parseable frontmatter with a non-empty `type` (error); presence of recommended
-`title`/`description`/`timestamp` and valid ISO-8601 timestamps (warnings); and resolvable
-`[[wikilinks]]` (warning); that a `resource: raw/…` names an existing raw copy (warning); that no
+`title`/`description`/`timestamp` and valid ISO-8601 timestamps (warnings); that no `timestamp`
+is in the future, more than 5 minutes past the current UTC time (warning, with file and value:
+the skill takes timestamps from `date -u`, so a future one was guessed); resolvable
+`[[wikilinks]]` (warning); that no `[[wikilink]]` is split across lines, which Obsidian does not
+render (warning, with file and line); that a `resource: raw/…` names an existing raw copy (warning); that no
 two `.md` files share a filename stem, `raw/` included (error); and that pages in `concepts/`,
 `entities/`, `sources/` and `notes/` use that folder's filename prefix, with concepts and entities
 carrying the prefix as their first tag (warnings; see `reference/NAMING.md`). It otherwise skips
