@@ -18,6 +18,16 @@ except ImportError:
 RESERVED = {"index.md", "log.md"}
 KNOWN_TYPES = {"Article", "Paper", "Concept", "Entity", "Note", "Decision", "Goal"}
 RECOMMENDED = ("title", "description", "timestamp")
+RAW_DIR = "raw"
+# Filename prefixes allowed for a page directly inside each folder (see reference/NAMING.md).
+PREFIXES = {
+    "concepts": ("pattern", "method", "artifact", "topic"),
+    "entities": ("person", "org", "tool", "place"),
+    "sources": ("research", "article", "paper", "book", "meeting", "chat"),
+    "notes": ("note", "decision", "goal"),
+}
+# Folders whose pages must carry their prefix as the first tag.
+TAGGED_BY_PREFIX = ("concepts", "entities")
 
 FM_RE = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?", re.DOTALL)
 WIKILINK_RE = re.compile(r"\[\[([^\]\|#]+)(?:[#\|][^\]]*)?\]\]")
@@ -65,19 +75,64 @@ def is_iso8601(value):
 
 
 def collect_md_files(root):
+    """Wiki pages only: the top-level raw/ directory holds verbatim source copies, not pages."""
     out = []
-    for dirpath, _dirs, files in os.walk(root):
+    for dirpath, dirs, files in os.walk(root):
+        if dirpath == root and RAW_DIR in dirs:
+            dirs.remove(RAW_DIR)
         for name in files:
             if name.endswith(".md"):
                 out.append(os.path.join(dirpath, name))
     return sorted(out)
 
 
+def collect_raw_md_files(root):
+    """Markdown files under the top-level raw/ dir: not pages, but Obsidian indexes their stems."""
+    out = []
+    for dirpath, _dirs, files in os.walk(os.path.join(root, RAW_DIR)):
+        out.extend(os.path.join(dirpath, n) for n in files if n.endswith(".md"))
+    return sorted(out)
+
+
+def stem_of(path):
+    return os.path.splitext(os.path.basename(path))[0]
+
+
+def check_duplicate_stems(root, paths):
+    """One error per stem shared by two or more .md files: [[stem]] would be ambiguous."""
+    by_stem = {}
+    for p in paths:
+        if os.path.basename(p) in RESERVED:
+            continue
+        by_stem.setdefault(stem_of(p), []).append(os.path.relpath(p, root))
+    return ["duplicate filename stem '%s': %s" % (s, ", ".join(sorted(ps)))
+            for s, ps in sorted(by_stem.items()) if len(ps) > 1]
+
+
+def check_naming(rel, data):
+    """Warnings for a page directly in a prefixed folder: filename prefix and first tag."""
+    parts = rel.split(os.sep)
+    if len(parts) != 2 or parts[0] not in PREFIXES:
+        return []
+    folder, stem = parts[0], stem_of(rel)
+    prefix = next((p for p in PREFIXES[folder] if stem.startswith(p + "-")), None)
+    if prefix is None:
+        return ["%s: filename should start with one of %s (see NAMING.md)"
+                % (rel, ", ".join(p + "-" for p in PREFIXES[folder]))]
+    if folder in TAGGED_BY_PREFIX:
+        tags = data.get("tags")
+        first = tags[0] if isinstance(tags, list) and tags else None
+        if first != prefix:
+            return ["%s: first tag should be '%s' to match the filename prefix" % (rel, prefix)]
+    return []
+
+
 def validate_bundle(root):
     """Return (errors, warnings) as lists of strings."""
     errors, warnings = [], []
     files = collect_md_files(root)
-    stems = {os.path.splitext(os.path.basename(p))[0] for p in files}
+    stems = {stem_of(p) for p in files}
+    errors.extend(check_duplicate_stems(root, files + collect_raw_md_files(root)))
 
     for path in files:
         rel = os.path.relpath(path, root)
@@ -111,6 +166,13 @@ def validate_bundle(root):
                 warnings.append("%s: missing recommended field '%s'" % (rel, field))
         if "timestamp" in data and not is_iso8601(data["timestamp"]):
             warnings.append("%s: 'timestamp' is not valid ISO 8601" % rel)
+
+        warnings.extend(check_naming(rel, data))
+
+        resource = data.get("resource")
+        if isinstance(resource, str) and resource.startswith(RAW_DIR + "/"):
+            if not os.path.isfile(os.path.join(root, resource)):
+                warnings.append("%s: resource '%s' has no matching raw copy" % (rel, resource))
 
         for stem in WIKILINK_RE.findall(strip_code(text)):
             if stem.strip() not in stems:

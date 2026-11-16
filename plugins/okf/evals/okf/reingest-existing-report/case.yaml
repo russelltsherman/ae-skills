@@ -1,0 +1,15 @@
+# Goal: Checks that ingesting a report the vault already holds under an older source page updates that page in place (no second source page or index entry), stores the raw copy and repoints resource at it, adds the missing open questions, keeps the CQRS concept page's lines that came from the microservices and ISR sources, corrects the Netflix page's overstated consistency claim, logs the work as an update, and leaves the vault passing the validator.
+schema_version: "1.1"
+name: reingest-existing-report
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  sources/ still holds exactly research-pattern-cqrs.md, research-pattern-microservices.md and
+  research-pattern-incremental-static-regeneration.md. research-pattern-cqrs.md now has resource: raw/cqrs-…-applic.md
+  (a byte-identical copy) and an origin, plus an Open questions section with
+  the report's four questions. concepts/pattern-cqrs.md still states that CQRS is used
+  for cross-service queries in microservices and that ISR shares the
+  stale-read trade-off. entities/org-netflix.md says RAW Hollow is eventually
+  consistent by default, with strong consistency available per request.
+  index.md has one CQRS source entry. log.md records an Update, not a second
+  Creation of the CQRS source. The validator reports 0 errors.

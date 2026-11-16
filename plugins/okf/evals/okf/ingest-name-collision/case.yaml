@@ -1,0 +1,17 @@
+# Goal: Checks that ingesting an article about vertical slicing as a delivery practice, into a vault that already has pattern-vertical-slice for the code-organisation pattern, creates a separate method- concept page instead of merging into or renaming the pattern page, gives each page aliases with only its own phrasing (removing the bare shared term from the pattern page), cross-links the two pages with a line telling them apart without inventing a relationship, names the source page article-<author-or-site>-<title>, gives any new entity page a type prefix and matching first tag, keeps the article's self-reported estimate hedged, and leaves the vault passing the validator with no naming warnings.
+schema_version: "1.1"
+name: ingest-name-collision
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  A new concepts/method-vertical-slicing.md (or similar method- name) describes
+  vertical slicing as a way of cutting work into thin end-to-end increments,
+  with aliases such as "Vertical slicing"; the bare term "Vertical slices" is
+  removed from the pattern page's aliases and appears on neither. No page
+  claims a relationship between the two ideas beyond the disambiguation line. concepts/pattern-vertical-slice.md keeps its
+  filename and still describes code organisation by feature; it and the new
+  page each link the other with a line saying they are different ideas. The
+  source page is sources/article-<okafor-or-deliverynotes>-<short-title>.md. A
+  page for the author, if any, is entities/person-dana-okafor.md with first tag
+  person. The "three weeks to under one" figure stays marked as the author's
+  unmeasured estimate. The validator reports 0 errors and no naming warnings.

@@ -1,0 +1,15 @@
+# Goal: Checks that ingesting pasted chat takeaways stores the exact pasted text as a raw .txt copy in the vault, points the source page's resource at it, names the source page meeting-<event>-<date>, keeps the staging load test hedged rather than stated as fact, keeps the materialized-views question open, reports the CI-enforcement disagreement as two people's positions without creating first-name-only person pages, and leaves the vault passing the validator with no naming warnings.
+schema_version: "1.1"
+name: ingest-pasted-takeaways
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  vault/raw/ holds a .txt file named after the source page, containing the
+  four pasted bullets exactly as given. The source page is named
+  meeting-<event>-<yyyy-mm-dd>. A new sources/ page has resource: raw/<file>. The 180ms vs 410ms
+  figure keeps its "one staging load test, not settled" qualifier on every page
+  that repeats it. The read-model question appears as an open question, not
+  an answer. The CI-enforcement point is attributed to Priya and Tom as a
+  disagreement, and no
+  person page is created for Priya or Tom. The validator reports 0 errors and
+  no naming warnings.

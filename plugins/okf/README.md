@@ -13,8 +13,12 @@ knowledge-base repo and is always addressed relative to the current working dire
 The skill picks one of three operations from the user's intent:
 
 - **Ingest** — read a source (URL, PDF, pasted text, or chat takeaways), gate it for completeness,
-  then create/update `sources/`, `concepts/`, and `entities/` pages with bidirectional
-  `[[wikilinks]]` and a `log.md` entry. A source that can't be genuinely read is reported as a
+  store a verbatim copy in `raw/`, then create/update `sources/`, `concepts/`, and `entities/`
+  pages with bidirectional `[[wikilinks]]` and a `log.md` entry. Source pages point at their raw
+  copy (`resource: raw/<file>`), so links travel with the vault; confidence levels, caveats and
+  open questions are carried over rather than flattened. Pages are named `<prefix>-<name>` by
+  kind (`pattern-cqrs`, `method-test-driven-development`, `person-kent-beck`,
+  `research-pattern-cqrs`), so the same idea gets the same name on every ingest. A source that can't be genuinely read is reported as a
   `**Failure**`, never papered over with a stub.
 - **Query** — answer "what do I know about X" from the vault's own pages first, citing them.
 - **Lint** — run the validator plus scan for contradictions, stale timestamps, orphan pages, and
@@ -28,7 +32,9 @@ okf/
 ├── skills/okf/
 │   ├── SKILL.md                  # the maintainer skill (Ingest / Query / Lint)
 │   ├── reference/SCHEMA.md       # the OKF vault schema contract the skill obeys
+│   ├── reference/NAMING.md       # page naming rules: <prefix>-<name>, aliases, when to make a page
 │   └── trigger-eval.json         # triggering eval cases (should/should-not fire)
+├── evals/okf/                    # skill eval cases (claude plugin eval --eval-dir evals/okf)
 └── scripts/okf-validate/
     ├── okf_validate.py           # OKF v0.1 bundle validator (PyYAML)
     ├── test_okf_validate.py      # pytest suite
@@ -58,7 +64,7 @@ add it to `.gitignore`:
 .claude/*.local.md
 ```
 
-The vault itself (your `sources/`, `concepts/`, `entities/`, `notes/`, `index.md`, `log.md`, and
+The vault itself (your `raw/`, `sources/`, `concepts/`, `entities/`, `notes/`, `index.md`, `log.md`, and
 `.obsidian/`) lives in your own knowledge-base repo, separate from this plugin.
 
 ## Validator
@@ -71,7 +77,12 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/okf-validate/okf_validate.py" vault
 
 It enforces: parseable frontmatter with a non-empty `type` (error); presence of recommended
 `title`/`description`/`timestamp` and valid ISO-8601 timestamps (warnings); and resolvable
-`[[wikilinks]]` (warning). Exit code `0` = no errors, `1` = errors, `2` = usage/dependency problem.
+`[[wikilinks]]` (warning); that a `resource: raw/…` names an existing raw copy (warning); that no
+two `.md` files share a filename stem, `raw/` included (error); and that pages in `concepts/`,
+`entities/`, `sources/` and `notes/` use that folder's filename prefix, with concepts and entities
+carrying the prefix as their first tag (warnings; see `reference/NAMING.md`). It otherwise skips
+the top-level `raw/` directory, which holds verbatim sources rather than pages. Exit code `0` = no
+errors, `1` = errors, `2` = usage/dependency problem.
 
 Run the tests with:
 

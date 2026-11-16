@@ -1,0 +1,17 @@
+# Goal: Checks that ingesting a structured research report stores a byte-identical raw copy in the vault, points the source page's resource at it, carries the report's open questions and confidence levels onto the wiki pages, adds no data-ownership design the report leaves open, updates the existing Shopify entity page with the report's critique, names the source and concept pages research-pattern-modular-monolith and pattern-modular-monolith, and leaves the vault passing the validator with no naming warnings.
+schema_version: "1.1"
+name: ingest-research-report
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  vault/raw/ holds an unmodified copy of the report. A new sources/ page has
+  resource: raw/<file> and an origin naming the report's path, and an
+  "Open questions" section with the report's four open questions. The
+  modular-monolith concept page keeps confidence levels or hedges on the
+  medium-confidence claims it repeats, and does not present per-module data
+  ownership (schema per module, database per module) as settled. The existing
+  org-shopify entity page now records the Packwerk retrospective or the Rails World
+  2024 critique and links the new source page. The source page is
+  sources/research-pattern-modular-monolith.md and the concept page
+  concepts/pattern-modular-monolith.md. The validator reports 0 errors and no
+  naming warnings.

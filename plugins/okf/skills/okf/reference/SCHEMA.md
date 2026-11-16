@@ -9,8 +9,10 @@ in body link syntax. Portability to other OKF consumers (a wikilink->markdown ex
 Phase 3 item, not done here.
 
 ## Layers
-- Raw sources (immutable): external articles/PDFs/chats. NOT copied wholesale. A page in
-  `sources/` records a faithful summary plus a `resource:` URI/path back to the original.
+- Raw sources (immutable): external articles/PDFs/chats, copied verbatim into `raw/` at ingest
+  and never edited afterwards. A page in `sources/` records a faithful summary, `resource:`
+  pointing at its raw copy (`raw/<file>`, relative to the vault root), and `origin:` naming
+  where the copy came from (URL or original path).
 - Wiki (agent-owned): `concepts/` and `entities/`. The agent creates, updates, links, and
   keeps these consistent.
 - Human layer: `notes/`. The user's own thinking. The agent organizes but treats user text
@@ -21,10 +23,18 @@ Phase 3 item, not done here.
 - `concepts/` -> type `Concept` (a distilled idea/technique/definition).
 - `entities/` -> type `Entity` (person, org, tool, product, place).
 - `notes/`    -> type `Note`, `Decision`, or `Goal`.
+- `raw/`      -> no type: verbatim source copies (any format), outside the wiki. They carry no
+  frontmatter, are never edited, and are exempt from every rule below.
 New topical subdirectories may emerge; place a file by its `type`, not by topic.
 
 ## File rules
-- One concept per file. UTF-8 Markdown. Filename is kebab-case of the title, `.md`.
+- One concept per file. UTF-8 Markdown, `.md`.
+- Filenames follow `reference/NAMING.md`: `<prefix>-<name>`, where the prefix names the kind of
+  page (`pattern-`, `method-`, `artifact-`, `topic-` for concepts; `person-`, `org-`, `tool-`,
+  `place-` for entities; `research-`, `article-`, `paper-`, `book-`, `meeting-`, `chat-` for
+  sources; `note-`, `decision-`, `goal-` for notes). The filename is not derived from `title:`.
+- Every filename stem is unique across the whole vault, `raw/` included: Obsidian resolves
+  `[[stem]]` by filename, whatever the folder.
 - Every non-reserved file starts with YAML frontmatter delimited by `---` lines.
 - Reserved filenames: `index.md`, `log.md`. These are exempt from the frontmatter rules
   below (root `index.md` may carry only `okf_version`).
@@ -35,19 +45,24 @@ Required:
 Strongly recommended (include whenever known):
   title: <display name>
   description: <one sentence; used in previews and index entries>
-  resource: <canonical URI or local path of the underlying asset; for sources>
-  tags: [list, of, lowercase, tags]
+  resource: <for sources: the raw copy, as a vault-relative path `raw/<file>`>
+  origin: <for sources: where the raw copy came from — URL or the path the user gave>
+  (`origin` is a vault extension; OKF allows unknown extra keys.)
+  tags: [list, of, lowercase, tags]   # first tag = the filename prefix (`pattern`, `person`…)
+  aliases: [Acronym, Expanded Name, synonym]   # concepts and entities; Obsidian-native
   timestamp: <ISO 8601 datetime of last change, e.g. 2026-06-26T00:00:00Z>
 Unknown extra keys are allowed and must be tolerated by consumers.
 
 ## Links
 - Use Obsidian wikilinks in bodies: [[file-stem]] or [[file-stem|alias]]. The stem is the
-  target filename without `.md` (e.g. [[open-knowledge-format]]).
+  target filename without `.md` (e.g. [[topic-open-knowledge-format]]). In running prose,
+  prefer the alias form for readability: [[pattern-cqrs|CQRS]].
 - Links assert untyped relationships. Broken links are tolerated (may be planned pages).
 - Citations to external sources go under a `# Citations` heading, numbered: `[1] [Title](url)`.
 
 ## Conventional body headings (use when relevant)
-`# Summary`, `# Schema`, `# Examples`, `# Citations`.
+`# Summary`, `# Schema`, `# Examples`, `# Open questions` (source pages, when the source lists
+any), `# Citations`.
 
 ## Reserved files
 - Root `vault/index.md`: progressive-disclosure listing. Frontmatter limited to
@@ -74,3 +89,12 @@ Unknown extra keys are allowed and must be tolerated by consumers.
    `resource`). `timestamp`, when present, must be valid ISO 8601 or it warns. (So SCHEMA's
    "strongly recommended" list is broader than what the validator enforces, by design.)
 3. Every wikilink resolves to an existing vault file (warning if not).
+4. Everything under `raw/` is skipped: no frontmatter, type, wikilink or naming checks. Its
+   `.md` filenames still count for invariant 6, because Obsidian indexes them.
+5. A `resource:` that starts with `raw/` must name an existing file in `raw/` (warning if not).
+6. No two `.md` files anywhere in the vault share a filename stem (error): a wikilink to that
+   stem would be ambiguous.
+7. A page directly in `concepts/`, `entities/`, `sources/` or `notes/` has a stem starting with
+   one of that folder's prefixes from `NAMING.md` (warning if not).
+8. A page in `concepts/` or `entities/` has its prefix (without the hyphen) as its first tag
+   (warning if not).
