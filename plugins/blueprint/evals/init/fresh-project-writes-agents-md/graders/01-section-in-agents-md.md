@@ -1,11 +1,11 @@
 ---
 type: regex
-name: section-in-dot-claude
+name: section-in-agents-md
 target:
   source: file
-  path: .claude/CLAUDE.md
+  path: AGENTS.md
 pattern: '<!-- blueprint:start -->[\s\S]*Planning with blueprint[\s\S]*<!-- blueprint:end -->'
 weight: 1
 ---
 
-.claude/CLAUDE.md holds the blueprint section between its start and end markers
+AGENTS.md in the project root holds the blueprint section between its start and end markers

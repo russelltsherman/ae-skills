@@ -17,7 +17,7 @@ Every document except the plan and the decision records is living: it says what 
 
 How the parts work together:
 
-1. `init` (M2) copies the templates (M1) into a project's `.blueprints/_rules/` and adds a short section to the project's `CLAUDE.md`.
+1. `init` (M2) copies the templates (M1) into a project's `.blueprints/_rules/` and adds a short section to the project's `AGENTS.md`.
 2. The operator then works with `hld` (M3) and `lld` (M4) in any order (D16). Each skill reads its level's documents, the level above and the code, reviews them for gaps and contradictions, interviews the operator, and writes what is agreed by the project's templates.
 3. `lld` flags any design that crosses into the HLD, and the operator takes it to `hld` (D4).
 4. The lint (M5) parses every document's front matter and citations. `make check` (M6) runs the lint with the plugin's other offline checks.
@@ -59,7 +59,7 @@ Contracts:
 
 ### M2 init
 
-Scaffolds a project. It copies the plugin's templates into the project, never overwriting a file the project has changed without asking, and adds a `blueprint` section between markers in the project's `CLAUDE.md`. It also recognises when the new project is nested inside another.
+Scaffolds a project. It copies the plugin's templates into the project, never overwriting a file the project has changed without asking, and adds a `blueprint` section between markers in the project's `AGENTS.md`. It also recognises when the new project is nested inside another.
 
 Serves: SC2, SC3. Decisions: D5, D6, D13.
 
@@ -115,7 +115,7 @@ Contracts:
 | --- | --- | --- |
 | Plugin templates, in the plugin's `.blueprints/_rules/` | M1 | M2 |
 | Project templates, in the project's `.blueprints/_rules/` | M2 | M3, M4, M5 |
-| The `blueprint` section of a project's `CLAUDE.md` | M2 | none |
+| The `blueprint` section of a project's `AGENTS.md` | M2 | none |
 | HLD documents | M3 | M4, M5 |
 | LLD documents | M4 | M5 |
 

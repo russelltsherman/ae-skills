@@ -1,0 +1,7 @@
+# Goal: Checks that in a fresh git repository /blueprint:init writes the blueprint section to AGENTS.md in the project root, creates no CLAUDE.md file anywhere, and still copies the templates into .blueprints/_rules/.
+schema_version: "1.1"
+name: fresh-project-writes-agents-md
+expected_outcome: |
+  AGENTS.md exists in the project root and holds the blueprint section between its <!-- blueprint:start --> and <!-- blueprint:end --> markers. No CLAUDE.md exists, neither in the project root nor in .claude/. .blueprints/_rules/ holds the plugin's templates.
+context:
+  scaffold_script: setup.sh

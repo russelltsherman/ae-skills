@@ -1,1 +1,3 @@
 .plans/
+# skill-creator eval workspaces
+plugins/*/skills/*-workspace/

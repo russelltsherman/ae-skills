@@ -9,7 +9,7 @@ status: living
 Everything the design skills stand on, built by hand: the plugin manifest, the templates, project scaffolding, and an offline `make check` that holds the plugin's own HLD to zero lint errors (SQT1, SQT2). It comes first because `hld` and `lld` read the templates `init` installs, and every later phase is checked by the lint.
 
 - M1 templates: the eight document templates in the plugin's `.blueprints/_rules/`, stable enough for `init` to ship.
-- M2 init: copying the templates into a project without overwriting changed files, the `CLAUDE.md` section between markers, and detection of a parent project. After: M1.
+- M2 init: copying the templates into a project without overwriting changed files, the `AGENTS.md` section between markers, and detection of a parent project. After: M1.
 - M5 lint: front matter and status checks for every document type, heading checks, and citation checks within one project, including withdrawn items and superseded decisions.
 - M6 make targets: `make check` running plugin validation, shellcheck, the lint and the lint's own tests; `make evals` as an empty, billed target kept out of `make check`. After: M5.
 

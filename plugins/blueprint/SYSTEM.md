@@ -20,7 +20,7 @@ The agent works as an expert architect and analyst. It reviews what is written f
 
 - **Operators:** the people who run the plugin's commands and make every design decision.
 - **Agents:** Claude Code sessions running the plugin's skills on the operator's behalf.
-- **Projects that adopt `blueprint`:** they gain `SYSTEM.md`, `ARCHITECTURE.md`, `ROADMAP.md` and `docs/adr/` in their root, a `.blueprints/` directory, and a section in their `CLAUDE.md`.
+- **Projects that adopt `blueprint`:** they gain `SYSTEM.md`, `ARCHITECTURE.md`, `ROADMAP.md` and `docs/adr/` in their root, a `.blueprints/` directory, and a section in their `AGENTS.md`.
 - **Claude Code:** hosts the plugin and loads its skills.
 - **`policy-*` skills a project provides:** applied to every component design.
 - **`pattern-*` skills, from the separate `patterns` plugin or the project:** well-known architecture patterns that inform high-level design choices.
